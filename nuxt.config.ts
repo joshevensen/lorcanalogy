@@ -15,6 +15,11 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  content: {
+    preview: {
+      api: 'https://lorcanalogy.pages.dev/'
+    }
+  },
   primevue: {
     options: {
       theme: {

@@ -1,2 +1,21 @@
 @import "tailwindcss";
 @import "tailwindcss-primeui";
+
+@theme {
+    --color-lorcana-indigo: #373b70;
+    --color-lorcana-gold: #d3ba84;
+    --color-lorcana-kelp: #1c1c1a;
+    --color-lorcana-parchment: #e3caa8;
+
+    --color-lorcana-parchment-0: #F9F4EE;
+    --color-lorcana-parchment-100: #F4EADC;
+    --color-lorcana-parchment-200: #F1E5D4;
+    --color-lorcana-parchment-300: #EEDFCB;
+    --color-lorcana-parchment-400: #EBDAC2;
+    --color-lorcana-parchment-500: #E9D5B9;
+    --color-lorcana-parchment-600: #E6CFB1;
+    --color-lorcana-parchment-700: #E3CAA8;
+    --color-lorcana-parchment-800: #CCB697;
+    --color-lorcana-parchment-900: #887965;
+
+}

@@ -1,11 +1,17 @@
 <script lang="ts" setup>
-const route = useRoute()
+import type {MenuItem} from "primevue/menuitem";
 
-const { data: navigation } = await useAsyncData('navigation', () => {
+const route = useRoute()
+const router = useRouter()
+
+/**
+ * Get Content
+ */
+const {data: navigation} = await useAsyncData('navigation', () => {
   return queryCollectionNavigation('content')
 })
 
-const { data: page } = await useAsyncData(route.path, () => {
+const {data: page} = await useAsyncData(route.path, () => {
   return queryCollection('content').path(route.path).first()
 })
 
@@ -13,51 +19,149 @@ const {data: siblings} = await useAsyncData('surround', () => {
   return queryCollectionItemSurroundings('content', route.path)
 })
 
-if(page.value) {
-  console.log('page', page.value);
-
+/**
+ * SEO
+ */
+if (page.value) {
   page.value.seo.title = page.value.title + ' | Lorcanalogy'
   useSeoMeta(page.value.seo)
 }
+
+/**
+ * Variables
+ */
+const menu = ref();
+const maxWidthClass = 'max-w-2xl mx-auto';
+const headerFooterClasses = `fixed left-0 right-0 bg-lorcana-parchment-200 border-lorcana-parchment-800`;
+const updatedAt = new Date(String(page.value?.meta.updated)).toLocaleDateString('en-US', {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+})
+
+/**
+ * Computed
+ */
+const menuItems = computed<MenuItem[]>(() => {
+  if (navigation.value) {
+    return navigation.value.map((item) => {
+      return {
+        label: item.title,
+        to: item.path,
+      }
+    })
+  }
+
+  return []
+});
+
+console.log('menuItems', menuItems);
+
+
+/**
+ * Functions
+ */
+function goHome() {
+  router.push('/');
+}
+
+const toggle = (event: any) => {
+  menu.value.toggle(event);
+};
 </script>
 
 <template>
-  <header class="fixed top-0 left-0 right-0 py-2 bg-white border-b border-surface-200 text-center">
-    <NuxtLink to="/">Lorcanalogy</NuxtLink>
+  <!--  Header -->
+  <header :class="`${headerFooterClasses} top-0 py-2 border-b`">
+    <div :class="`${maxWidthClass} flex justify-center`">
+      <NuxtLink class="text-lg" to="/">
+        <Lorcanaology/>
+      </NuxtLink>
+    </div>
   </header>
 
-  <div v-if="page" class="pt-20 pb-16 px-6 max-w-2xl mx-auto">
-    <article class="mb-10">
-      <h1 class="text-5xl text-center">{{ page.title }}</h1>
+  <main :class="`${maxWidthClass} pt-32 pb-20 px-6`">
+    <!--    Article -->
+    <article v-if="page" class="mb-10">
+      <h1 class="text-5xl text-primary-600 font-bold text-center">{{ page.title }}</h1>
 
-      <Panel class="mt-8" collapsed header="Table of Contents" toggleable>
+      <p v-if="page.meta.updated" class="mt-2 text-sm px-2 text-center">Last updated {{ updatedAt }}</p>
+
+      <p v-if="page.description" class="mt-8 -mb-4 text-lg px-2">{{ page.description }}</p>
+
+      <UiPanel class="mt-12 -mb-8" collapsed header="Table of Contents" toggleable>
         <nav>
           <ul v-if="page.body?.toc?.links">
             <li v-for="item in page.body.toc.links" :key="item.id">
               <NuxtLink :to="`#${item.id}`">{{ item.text }}</NuxtLink>
+
+              <ul v-if="item.children" class="pl-4">
+                <li v-for="child in item.children" :key="child.id">
+                  <NuxtLink :to="`#${child.id}`">{{ child.text }}</NuxtLink>
+                </li>
+              </ul>
             </li>
           </ul>
         </nav>
-      </Panel>
+      </UiPanel>
 
       <ContentRenderer :value="page"/>
+
+      <UiPanel class="mt-12" collapsed header="Disclaimers" toggleable>
+        <Disclaimer/>
+      </UiPanel>
     </article>
 
-    <footer class="fixed bottom-0 right-0 left-0 py-2 px-4 bg-white border-t border-surface-200 flex justify-between">
-      <NuxtLink v-if="siblings?.[0]" :to="siblings[0].path">
-        ← {{ siblings[0].title }}
-      </NuxtLink>
-      <NuxtLink v-if="siblings?.[1]" :to="siblings[1].path" class="ml-auto">
-        {{ siblings[1].title }} →
-      </NuxtLink>
-    </footer>
-  </div>
+    <!--    Empty-->
+    <template v-else>
+      <h1 class="mt-10 text-5xl text-primary-600 text-center">Page Not Found</h1>
+      <p class="max-w-lg mt-4 mx-auto text-2xl text-center leading-normal">Oops! The content you're looking for doesn't
+        exist. But there is plenty of other content :)</p>
 
-  <template v-else>
-    <div class="empty-page">
-      <h1>Page Not Found</h1>
-      <p>Oops! The content you're looking for doesn't exist.</p>
-      <NuxtLink to="/">Go back home</NuxtLink>
+      <div class="flex justify-center mt-12">
+        <Button label="Go Back Home" @click="goHome"/>
+      </div>
+    </template>
+  </main>
+
+  <!--Footer-->
+  <footer :class="`${headerFooterClasses} bottom-0 py-4 px-4 md:px-0 border-t`">
+    <div :class="`${maxWidthClass} grid grid-cols-5 gap-2`">
+      <div class="col-span-2 flex items-center text-sm">
+        <UiLink v-if="siblings?.[0]" :to="siblings[0].path">← {{ siblings[0].title }}</UiLink>
+      </div>
+
+      <div class="flex justify-center items-center">
+        <p
+          aria-controls="overlay_menu"
+          aria-haspopup="true"
+          class="text-primary-600 hover:text-primary-400 text-xs font-bold uppercase cursor-pointer"
+          @click="toggle"
+        >Pages</p>
+      </div>
+
+      <div class="col-span-2 flex justify-end items-center text-sm">
+        <UiLink v-if="siblings?.[1]" :to="siblings[1].path">{{ siblings[1].title }} →</UiLink>
+      </div>
     </div>
-  </template>
+  </footer>
+
+  <!--  Page Menu-->
+  <Menu
+    v-if="menuItems"
+    id="overlay_menu"
+    ref="menu"
+    :model="menuItems"
+    :popup="true"
+    pt:root:class="bg-lorcana-parchment-0!"
+    pt:root:style="transform: translateX(-40%)"
+  >
+    <template #item="{ item, props }">
+      <router-link v-slot="{ href, navigate }" :to="item.to" custom>
+        <a :href="href" v-bind="props.action" @click="navigate">
+          <span class="ml-2">{{ item.label }}</span>
+        </a>
+      </router-link>
+    </template>
+  </Menu>
 </template>

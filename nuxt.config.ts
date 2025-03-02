@@ -16,11 +16,6 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
   content: {
-    build: {
-      markdown: {
-        toc: {depth: 4, searchDepth: 4},
-      },
-    },
     preview: {
       api: 'https://lorcanalogy.pages.dev/'
     }

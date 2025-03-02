@@ -5,20 +5,21 @@ const { data: navigation } = await useAsyncData('navigation', () => {
 </script>
 
 <template>
-  <div class="pt-24 ">
+  <div class="pt-18">
     <p class="mb-1 text-xl uppercase text-center">Welcome to</p>
-    <h1 class="text-6xl text-center">Lorcana-logy</h1>
+    <h1 class="text-6xl text-center">Lorcanalogy</h1>
     <p class="mt-4 text-center">An Unofficial Guide to playing <em>Disney Lorcana</em> TCG</p>
 
-    <div class="mt-16 mx-auto w-96">
-      <h3>Table of Contents</h3>
-      <nav>
-        <ul v-if="navigation">
-          <li v-for="item in navigation" :key="item.path">
-            <NuxtLink :to="item.path">{{ item.title }}</NuxtLink>
-          </li>
-        </ul>
-      </nav>
+    <div class="">
+      <Panel class="mt-16 mx-auto w-96" header="Pages">
+        <nav>
+          <ul v-if="navigation" class="space-y-2">
+            <li v-for="item in navigation" :key="item.path">
+              <NuxtLink :to="item.path" class="hover:text-primary">{{ item.title }}</NuxtLink>
+            </li>
+          </ul>
+        </nav>
+      </Panel>
     </div>
   </div>
 </template>

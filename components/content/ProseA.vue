@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PropType } from 'vue'
+import type {PropType} from 'vue'
 
 defineProps({
   href: {
@@ -15,7 +15,7 @@ defineProps({
 </script>
 
 <template>
-  <NuxtLink :href :target>
+  <NuxtLink :href :target class="text-primary-600 hover:text-primary-400">
     <slot />
   </NuxtLink>
 </template>

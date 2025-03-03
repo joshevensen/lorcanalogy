@@ -31,8 +31,6 @@ if (page.value) {
  * Variables
  */
 const menu = ref();
-const maxWidthClass = 'max-w-2xl mx-auto';
-const headerFooterClasses = `fixed left-0 right-0 bg-lorcana-parchment-200 border-lorcana-parchment-800`;
 const updatedAt = new Date(String(page.value?.meta.updated)).toLocaleDateString('en-US', {
   year: "numeric",
   month: "short",
@@ -55,8 +53,6 @@ const menuItems = computed<MenuItem[]>(() => {
   return []
 });
 
-console.log('menuItems', menuItems);
-
 
 /**
  * Functions
@@ -72,15 +68,9 @@ const toggle = (event: any) => {
 
 <template>
   <!--  Header -->
-  <header :class="`${headerFooterClasses} top-0 py-2 border-b`">
-    <div :class="`${maxWidthClass} flex justify-center`">
-      <NuxtLink class="text-lg" to="/">
-        <Lorcanaology/>
-      </NuxtLink>
-    </div>
-  </header>
+  <LayoutHeader/>
 
-  <main :class="`${maxWidthClass} pt-32 pb-20 px-6`">
+  <main class="content-width pt-32 pb-20 px-6">
     <!--    Article -->
     <article v-if="page" class="mb-10">
       <h1 class="text-5xl text-primary-600 font-bold text-center">{{ page.title }}</h1>
@@ -107,9 +97,7 @@ const toggle = (event: any) => {
 
       <ContentRenderer :value="page"/>
 
-      <UiPanel class="mt-12" collapsed header="Disclaimers" toggleable>
-        <Disclaimer/>
-      </UiPanel>
+      <Disclaimer class="mt-12" toggleable/>
     </article>
 
     <!--    Empty-->
@@ -125,8 +113,8 @@ const toggle = (event: any) => {
   </main>
 
   <!--Footer-->
-  <footer :class="`${headerFooterClasses} bottom-0 py-4 px-4 md:px-0 border-t`">
-    <div :class="`${maxWidthClass} grid grid-cols-5 gap-2`">
+  <footer class="header-footer bottom-0 py-4 px-4 md:px-0 border-t">
+    <div class="content-width grid grid-cols-5 gap-2">
       <div class="col-span-2 flex items-center text-sm">
         <UiLink v-if="siblings?.[0]" :to="siblings[0].path">← {{ siblings[0].title }}</UiLink>
       </div>

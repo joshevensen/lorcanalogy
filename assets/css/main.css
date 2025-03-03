@@ -17,5 +17,14 @@
     --color-lorcana-parchment-700: #E3CAA8;
     --color-lorcana-parchment-800: #CCB697;
     --color-lorcana-parchment-900: #887965;
+}
 
+@layer components {
+    .content-width {
+        @apply max-w-2xl mx-auto;
+    }
+
+    .header-footer {
+        @apply fixed left-0 right-0 bg-lorcana-parchment-200 border-lorcana-parchment-800;
+    }
 }

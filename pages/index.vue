@@ -8,10 +8,14 @@ const {data: navigation} = await useAsyncData('navigation', () => {
 function goToPage(path: string) {
   router.push(path);
 }
+
+function goToResources() {
+  router.push('/resources');
+}
 </script>
 
 <template>
-  <div class="max-w-lg mx-auto py-18 px-6">
+  <main class="content-width py-18 px-6">
     <h1 class="text-5xl md:text-7xl text-center">
       <Lorcanaology/>
     </h1>
@@ -36,9 +40,20 @@ function goToPage(path: string) {
         </UiPanel>
       </div>
 
-      <UiPanel header="Disclaimers">
-        <Disclaimer/>
+      <UiPanel
+        class="group cursor-pointer"
+        header="Resources"
+        titleClasses="group-hover:text-primary-600"
+        @click="goToResources()"
+      >
+        <p class="text-sm">Here a list of resources I've found in my
+          <DisneyLorcana/>
+          journey.
+        </p>
+        <p class="mt-4 text-primary-600 group-hover:text-primary-400 text-right">View Resources →</p>
       </UiPanel>
+
+      <Disclaimer/>
     </div>
-  </div>
+  </main>
 </template>

@@ -8,12 +8,13 @@ export default defineContentConfig({
     }),
     resources: defineCollection({
       type: 'data',
-      source: '/resources/*.yml',
+      source: 'resources/*.yml',
       schema: z.object({
         name: z.string(),
-        url: z.string(),
         description: z.string(),
-        type: z.enum(['blog', 'youtube', 'podcast', 'subreddit']),
+        websiteURL: z.string().optional(),
+        youtubeURL: z.string().optional(),
+        subredditURL: z.string().optional(),
       })
     })
   }

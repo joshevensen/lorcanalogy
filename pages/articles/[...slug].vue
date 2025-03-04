@@ -19,12 +19,14 @@ const {data: siblings} = await useAsyncData('surround', () => {
 if (page.value?.seo) {
   page.value.seo.title = page.value.title + ' | Lorcanalogy'
   useSeoMeta(page.value.seo)
+
+  console.log(page.value)
 }
 
 /**
  * Variables
  */
-const updatedAt = new Date(String(page.value?.meta.updated)).toLocaleDateString('en-US', {
+const updatedAt = new Date(String(page.value?.updated)).toLocaleDateString('en-US', {
   year: "numeric",
   month: "short",
   day: "numeric",
@@ -49,7 +51,7 @@ function goHome() {
         <article>
           <h1 class="content-title">{{ page.title }}</h1>
 
-          <p v-if="page.meta.updated" class="mt-2 text-sm px-2 text-center">Last updated {{ updatedAt }}</p>
+          <p v-if="page.updated" class="mt-2 text-sm px-2 text-center">Last updated {{ updatedAt }}</p>
           <p v-if="page.description" class="mt-8 -mb-4 text-lg px-2 text-center">{{ page.description }}</p>
 
           <UiPanel class="md:hidden mt-12 -mb-8" collapsed header="Table of Contents" toggleable>

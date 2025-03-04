@@ -21,10 +21,18 @@
 
 @layer components {
     .content-width {
-        @apply max-w-2xl mx-auto;
+        @apply max-w-2xl md:max-w-5xl mx-auto;
+    }
+
+    .content-title {
+        @apply text-5xl text-primary-600 font-bold text-center;
+    }
+
+    .page-padding {
+        @apply pt-16 md:pt-18 pb-8 px-6;
     }
 
     .header-footer {
-        @apply fixed left-0 right-0 bg-lorcana-parchment-200 border-lorcana-parchment-800;
+        @apply fixed z-50 left-0 right-0 bg-lorcana-parchment-200 border-lorcana-parchment-800;
     }
 }

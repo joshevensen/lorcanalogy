@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 const router = useRouter();
 
-const {data: navigation} = await useAsyncData('navigation', () => {
-  return queryCollectionNavigation('content', ['description'])
+const {data: articles} = await useAsyncData('articles', () => {
+  return queryCollectionNavigation('articles', ['description'])
 })
 
 function goToPage(path: string) {
@@ -12,10 +12,14 @@ function goToPage(path: string) {
 function goToResources() {
   router.push('/resources');
 }
+
+function goToGlossary() {
+  router.push('/glossary');
+}
 </script>
 
 <template>
-  <main class="content-width py-18 px-6">
+  <main class="content-width page-padding">
     <h1 class="text-5xl md:text-7xl text-center">
       <Lorcanaology/>
     </h1>
@@ -26,9 +30,9 @@ function goToResources() {
     </p>
 
     <div class="mt-16 space-y-10">
-      <div v-if="navigation" class="space-y-4">
+      <div v-if="articles" class="space-y-4">
         <UiPanel
-          v-for="item in navigation"
+          v-for="item in articles[0].children"
           :key="item.path"
           :header="item.title"
           class="group cursor-pointer"
@@ -40,18 +44,33 @@ function goToResources() {
         </UiPanel>
       </div>
 
-      <UiPanel
-        class="group cursor-pointer"
-        header="Resources"
-        titleClasses="group-hover:text-primary-600"
-        @click="goToResources()"
-      >
-        <p class="text-sm">Here a list of resources I've found in my
-          <DisneyLorcana/>
-          journey.
-        </p>
-        <p class="mt-4 text-primary-600 group-hover:text-primary-400 text-right">View Resources →</p>
-      </UiPanel>
+      <div class="space-y-4">
+        <UiPanel
+          class="group cursor-pointer"
+          header="Resources"
+          titleClasses="group-hover:text-primary-600"
+          @click="goToResources()"
+        >
+          <p class="text-sm">Here a list of resources I've found in my
+            <DisneyLorcana/>
+            journey.
+          </p>
+          <p class="mt-4 text-primary-600 group-hover:text-primary-400 text-right">View Resources →</p>
+        </UiPanel>
+
+        <UiPanel
+          class="group cursor-pointer"
+          header="Glossary"
+          titleClasses="group-hover:text-primary-600"
+          @click="goToGlossary()"
+        >
+          <p class="text-sm">Here a list of terms found in
+            <DisneyLorcana/>
+            and their definition.
+          </p>
+          <p class="mt-4 text-primary-600 group-hover:text-primary-400 text-right">View Glossary →</p>
+        </UiPanel>
+      </div>
 
       <Disclaimer/>
     </div>

@@ -1,13 +1,73 @@
 <script lang="ts" setup="">
+import type {MenuItem} from "primevue/menuitem";
 
+const {data: articles} = await useAsyncData('articles', () => {
+  return queryCollectionNavigation('articles')
+})
+
+const menuItems = computed<MenuItem[]>(() => {
+  const items: MenuItem[] = [{label: 'Home', to: '/'}];
+
+  if (articles.value) {
+    const articleChildren = articles.value[0].children || []
+    const articleItems: MenuItem[] = []
+
+    articleChildren.forEach((item) => {
+      articleItems.push({label: item.title, to: item.path})
+    })
+
+    items.push({
+      items: articleItems
+    })
+  }
+
+  items.push({
+    items: [
+      {label: 'Resources', to: '/resources'},
+      {label: 'Glossary', to: '/glossary'}
+    ]
+  })
+
+  return items;
+});
+
+const menu = ref();
+const toggle = (event: any) => {
+  menu.value.toggle(event);
+};
 </script>
 
 <template>
-  <header class="header-footer top-0 py-2 border-b">
-    <div class="content-width flex justify-center">
+  <header class="header-footer top-0 border-b">
+    <div class="content-width relative flex py-2 pl-4">
       <NuxtLink class="text-lg" to="/">
         <Lorcanaology/>
       </NuxtLink>
+
+      <div class="absolute right-2 top-0 bottom-0 flex items-center">
+        <Button
+          aria-controls="overlay_menu"
+          aria-haspopup="true"
+          icon="pi pi-bars"
+          variant="text"
+          @click="toggle"
+        />
+      </div>
     </div>
   </header>
+
+  <!--  Page Menu-->
+  <Menu
+    v-if="menuItems"
+    id="overlay_menu"
+    ref="menu"
+    :model="menuItems"
+    :popup="true"
+    pt:root:class="bg-lorcana-parchment-0!"
+    pt:submenuLabel:class="p-0! border-b border-lorcana-parchment-500!"
+  >
+    <template #item="{ item }">
+      <NuxtLink v-if="item.to" :to="item.to" class="block py-1 px-2">{{ item.label }}</NuxtLink>
+    </template>
+  </Menu>
 </template>

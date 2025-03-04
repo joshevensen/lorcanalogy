@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <Panel :collapsed="toggleable" :toggleable header="Disclaimers">
+  <UiPanel :collapsed="toggleable" :toggleable header="Disclaimers">
     <div class="space-y-4 text-sm">
       <p>
         <Lorcanaology/>
@@ -31,5 +31,5 @@ defineProps<{
         where
         credit is due, but sometimes I forget where I came across the information.</p>
     </div>
-  </Panel>
+  </UiPanel>
 </template>

@@ -15,7 +15,7 @@ defineProps({
 </script>
 
 <template>
-  <NuxtLink :href :target class="text-primary-600 hover:text-primary-400">
+  <NuxtLink :href :target class="text-primary-600 hover:text-primary-400 break-all">
     <slot />
   </NuxtLink>
 </template>

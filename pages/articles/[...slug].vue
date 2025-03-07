@@ -19,8 +19,6 @@ const {data: siblings} = await useAsyncData('surround', () => {
 if (page.value?.seo) {
   page.value.seo.title = page.value.title + ' | Lorcanalogy'
   useSeoMeta(page.value.seo)
-
-  console.log(page.value)
 }
 
 /**

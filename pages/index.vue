@@ -4,7 +4,7 @@ import Logo from "~/components/Logo.vue";
 const router = useRouter();
 
 const {data: articles} = await useAsyncData('articles', () => {
-  return queryCollectionNavigation('articles', ['description'])
+  return queryCollection('articles').all();
 })
 
 function goToPage(path: string) {
@@ -34,17 +34,17 @@ function goToGlossary() {
 
     <div class="mt-16 space-y-10">
       <div v-if="articles" class="space-y-4">
-        <UiPanel
-          v-for="item in articles[0].children"
+        <UiCard
+          v-for="item in articles"
           :key="item.path"
-          :header="item.title"
           class="group cursor-pointer"
-          titleClasses="group-hover:text-primary-600"
           @click="goToPage(item.path)"
         >
-          <p class="text-sm">{{ item.description }}</p>
-          <p class="mt-4 text-primary-600 group-hover:text-primary-400 text-right">Read Article →</p>
-        </UiPanel>
+          <div class="flex items-center justify-between gap-4">
+            <h2>{{ item.title }}</h2>
+            <p class="shrink-0 text-primary-600 group-hover:text-primary-400 text-right">Read Article →</p>
+          </div>
+        </UiCard>
       </div>
 
       <div class="space-y-4">

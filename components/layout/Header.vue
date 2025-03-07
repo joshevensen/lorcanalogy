@@ -1,7 +1,7 @@
 <script lang="ts" setup="">
 import type {MenuItem} from "primevue/menuitem";
 
-const {data: articles} = await useAsyncData('articles', () => {
+const {data: articles} = await useAsyncData('navArticles', () => {
   return queryCollectionNavigation('articles')
 })
 

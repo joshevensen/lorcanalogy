@@ -2,6 +2,8 @@
 const route = useRoute()
 const router = useRouter()
 
+definePageMeta({layout: 'article'})
+
 /**
  * Get Article Info
  */
@@ -24,11 +26,7 @@ if (page.value?.seo) {
 /**
  * Variables
  */
-const updatedAt = new Date(String(page.value?.updated)).toLocaleDateString('en-US', {
-  year: "numeric",
-  month: "short",
-  day: "numeric",
-})
+const updatedAt = formatDate(page.value?.updated);
 
 /**
  * Functions
@@ -46,14 +44,14 @@ function goHome() {
     <main class="content-width flex gap-16 pt-6 md:pt-8 pb-8 md:pb-12 px-6">
       <template v-if="page">
         <!--    Article -->
-        <article>
+        <article class="relative">
           <Logo small/>
           <h1 class="content-title">{{ page.title }}</h1>
 
           <p v-if="page.updated" class="mt-2 text-sm px-2 text-center">Last updated {{ updatedAt }}</p>
           <p v-if="page.description" class="mt-8 -mb-4 text-lg px-2 text-center">{{ page.description }}</p>
 
-          <UiPanel class="md:hidden mt-12 -mb-8" collapsed header="Table of Contents" toggleable>
+          <UiPanel class="sticky md:hidden mt-12 -mb-8" collapsed header="Table of Contents" toggleable>
             <nav>
               <ul v-if="page.body?.toc?.links">
                 <li v-for="item in page.body.toc.links" :key="item.id" class="mt-4">

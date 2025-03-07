@@ -38,22 +38,20 @@ const toggle = (event: any) => {
 </script>
 
 <template>
-  <header class="header-footer top-0 border-b">
-    <div class="content-width relative flex py-2 pl-4">
+  <header class="header-footer top-0 h-10 flex items-center border-b">
+    <div class="content-width w-full flex items-center justify-between pl-4">
       <NuxtLink class="flex gap-2 items-center text-lg" to="/">
         <NuxtImg class="h-6" height="20px" src="/favicon.png"/>
         <Lorcanaology/>
       </NuxtLink>
 
-      <div class="absolute right-2 top-0 bottom-0 flex items-center">
-        <Button
-          aria-controls="overlay_menu"
-          aria-haspopup="true"
-          icon="pi pi-bars"
-          variant="text"
-          @click="toggle"
-        />
-      </div>
+      <Button
+        aria-controls="overlay_menu"
+        aria-haspopup="true"
+        icon="pi pi-bars"
+        variant="text"
+        @click="toggle"
+      />
     </div>
   </header>
 

@@ -41,7 +41,7 @@ const toggle = (event: any) => {
   <header class="header-footer top-0 border-b">
     <div class="content-width relative flex py-2 pl-4">
       <NuxtLink class="flex gap-2 items-center text-lg" to="/">
-        <NuxtImg height="20px" src="/favicon.png"/>
+        <NuxtImg class="h-6" height="20px" src="/favicon.png"/>
         <Lorcanaology/>
       </NuxtLink>
 

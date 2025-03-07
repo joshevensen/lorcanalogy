@@ -5,7 +5,7 @@ defineProps<{ id?: string }>()
 <template>
   <h2
     :id
-    class="mt-18 mb-8 pb-2 md:pb-4 border-b border-lorcana-parchment-800 text-2xl md:text-3xl font-bold text-center text-lorcana-parchment-900 uppercase tracking-wide"
+    class="mt-18 mb-8 pb-2 border-b border-b-orange-800 text-2xl md:text-3xl font-bold text-center text-orange-600 uppercase tracking-wide"
   >
     <a :href="`#${id}`"><slot /></a>
   </h2>

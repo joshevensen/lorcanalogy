@@ -45,10 +45,11 @@ function goHome() {
   <LayoutHeader/>
 
   <div class="fixed top-10 left-0 right-0 bottom-12 overflow-y-scroll">
-    <main class="content-width flex gap-16 pt-18 md:pt-24 pb-8 md:pb-12 px-6">
+    <main class="content-width flex gap-16 pt-6 md:pt-8 pb-8 md:pb-12 px-6">
       <template v-if="page">
         <!--    Article -->
         <article>
+          <Logo small/>
           <h1 class="content-title">{{ page.title }}</h1>
 
           <p v-if="page.updated" class="mt-2 text-sm px-2 text-center">Last updated {{ updatedAt }}</p>
@@ -79,10 +80,11 @@ function goHome() {
           </UiPanel>
 
           <ContentRenderer :value="page"/>
+
           <Disclaimer class="mt-12" toggleable/>
         </article>
 
-        <aside class="hidden md:block basis-60 shrink-0 pt-24">
+        <aside class="hidden md:block basis-60 shrink-0 pt-52">
           <h5 class="mb-4 font-bold">On This Page</h5>
           <nav>
             <ul v-if="page.body?.toc?.links">

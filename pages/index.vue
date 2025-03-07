@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import Logo from "~/components/Logo.vue";
+
 const router = useRouter();
 
 const {data: articles} = await useAsyncData('articles', () => {
@@ -20,6 +22,7 @@ function goToGlossary() {
 
 <template>
   <main class="content-width page-padding">
+    <Logo/>
     <h1 class="text-5xl md:text-7xl text-center">
       <Lorcanaology/>
     </h1>

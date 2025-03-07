@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import Logo from "~/components/Logo.vue";
+
 const {data: terms} = await useAsyncData('terms', () => {
   return queryCollection('terms').all()
 })
@@ -8,9 +10,10 @@ const {data: terms} = await useAsyncData('terms', () => {
   <LayoutHeader/>
 
   <main class="content-width page-padding">
-    <h1 class="content-title mt-10">Glossary</h1>
+    <Logo small/>
+    <h1 class="content-title">Glossary</h1>
 
-    <div v-if="terms" class="mt-12 space-y-4">
+    <div v-if="terms" class="mt-12 mb-8 space-y-4">
       <UiPanel
         v-for="(item, index) in terms"
         :key="item.label + index"
@@ -19,5 +22,7 @@ const {data: terms} = await useAsyncData('terms', () => {
         <p>{{ item.definition }}</p>
       </UiPanel>
     </div>
+
+    <Disclaimer/>
   </main>
 </template>

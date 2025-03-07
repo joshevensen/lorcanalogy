@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import Logo from "~/components/Logo.vue";
+
 const {data: resources} = await useAsyncData('resources', () => {
   return queryCollection('resources').all()
 })
@@ -10,9 +12,10 @@ const urlClasses = "flex items-center gap-2 mt-2 text-primary-600 hover:text-pri
   <LayoutHeader/>
 
   <main class="content-width page-padding">
-    <h1 class="content-title mt-10">Resources</h1>
+    <Logo small/>
+    <h1 class="content-title">Resources</h1>
 
-    <div v-if="resources" class="mt-12 space-y-4">
+    <div v-if="resources" class="mt-12 mb-8 space-y-4">
       <UiPanel
         v-for="(item, index) in resources"
         :key="item.name + index"
@@ -33,5 +36,7 @@ const urlClasses = "flex items-center gap-2 mt-2 text-primary-600 hover:text-pri
         </a>
       </UiPanel>
     </div>
+
+    <Disclaimer/>
   </main>
 </template>

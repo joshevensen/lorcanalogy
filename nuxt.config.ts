@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxt/fonts',
     '@nuxt/image',
+    'nuxt-lodash',
     '@nuxthub/core',
     '@primevue/nuxt-module',
   ],

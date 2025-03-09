@@ -23,6 +23,7 @@ const menuItems = computed<MenuItem[]>(() => {
 
   items.push({
     items: [
+      {label: 'Card Table', to: '/card-table'},
       {label: 'Resources', to: '/resources'},
       {label: 'Glossary', to: '/glossary'}
     ]

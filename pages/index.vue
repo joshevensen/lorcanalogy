@@ -11,6 +11,10 @@ function goToPage(path: string) {
   router.push(path);
 }
 
+function goToCardTable() {
+  router.push('/card-table');
+}
+
 function goToResources() {
   router.push('/resources');
 }
@@ -43,6 +47,20 @@ function goToGlossary() {
     </div>
 
     <div class="space-y-4">
+
+      <UiPanel
+        class="group cursor-pointer"
+        header="Cards Table"
+        titleClasses="group-hover:text-primary-600"
+        @click="goToCardTable()"
+      >
+        <p class="text-sm">A filterable table of
+          <DisneyLorcana/>
+          cards.
+        </p>
+        <p class="mt-4 text-primary-600 group-hover:text-primary-400 text-right">View Card Table →</p>
+      </UiPanel>
+
       <UiPanel
         class="group cursor-pointer"
         header="Resources"

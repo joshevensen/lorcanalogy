@@ -1549,7 +1549,7 @@ export const set7Cards: CARD[] = [
     },
     "cost": 6,
     "inkwell": false,
-    "ink": "Amber",
+    "ink": null,
     "inks": [
       "Amber",
       "Sapphire"

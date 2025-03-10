@@ -6,7 +6,7 @@ import InputGroupAddon from "primevue/inputgroupaddon";
 const model = defineModel();
 
 defineProps<{
-  options: [];
+  options: any[];
   placeholder?: string;
 }>()
 </script>

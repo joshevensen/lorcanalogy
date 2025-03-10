@@ -40,7 +40,7 @@ const rarityOptions = [
   {label: 'Enchanted', value: 'Enchanted'},
 ];
 
-let setOptions = []; // This is set below
+let setOptions: any = []; // This is set below
 
 const inkableOptions = [
   {label: 'Inkable & Not Inkable', value: 'both'},
@@ -59,12 +59,12 @@ const dualSingleOptions = [
  */
 
 const searchTerm = ref('');
-const selectedInks = ref(['Amber', 'Amethyst', 'Emerald', 'Ruby', 'Sapphire', 'Steel']);
-const selectedTypes = ref(['Action', 'Character', 'Item', 'Location', 'Song']);
-const selectedRarities = ref(['Common', 'Uncommon', 'Rare', 'Super_rare', 'Legendary']);
-const selectedSets = ref([]); // This is set below
-const selectedInkable = ref('both');
-const selectedDualSingleInk = ref('both');
+const selectedInks = ref<string[]>(['Amber', 'Amethyst', 'Emerald', 'Ruby', 'Sapphire', 'Steel']);
+const selectedTypes = ref<string[]>(['Action', 'Character', 'Item', 'Location', 'Song']);
+const selectedRarities = ref<string[]>(['Common', 'Uncommon', 'Rare', 'Super_rare', 'Legendary']);
+const selectedSets = ref<string[]>([]); // This is set below
+const selectedInkable = ref<string>('both');
+const selectedDualSingleInk = ref<string>('both');
 
 
 // populate set related filter options, default, and variable
@@ -87,7 +87,7 @@ const filteredCards = computed(() => {
     // Ink
     if (card.ink) {
       if (!selectedInks.value.includes(card.ink)) return false;
-    } else if (card.inks.length > 1) {
+    } else if (card.inks && card.inks?.length > 1) {
       if (arraysInclude(selectedInks.value, card.inks) === false) return false;
     }
 
@@ -106,11 +106,11 @@ const filteredCards = computed(() => {
 
     // Dual vs Single Ink
     if (selectedDualSingleInk.value === 'single') {
-      if (!card.ink || card.inks.length > 1) return false;
+      if (!card.ink || (card.inks && card.inks?.length > 1)) return false;
     }
 
     if (selectedDualSingleInk.value === 'dual') {
-      if (card.ink || card.inks.length < 1) return false;
+      if (card.ink || (card.inks && card.inks?.length > 1)) return false;
     }
 
     return true;
@@ -131,7 +131,8 @@ const mappedCards = computed(() => {
       lore: card.lore,
       moveCost: card.move_cost,
       setName: card.set.name,
-      setNumber: `${card.set.code}-${card.collector_number}`,
+      setNumber: card.set.code,
+      cardNumber: card.collector_number,
       tcgPlayer: card.tcgplayer_id,
       layout: card.layout,
       image: card.image_uris.digital.normal,
@@ -153,10 +154,6 @@ function openFilters() {
   visible.value = true;
 }
 
-function resetFilters() {
-
-}
-
 </script>
 
 <template>
@@ -174,9 +171,11 @@ function resetFilters() {
       size="small"
       sortMode="multiple"
       stripedRows
+      exportFilename="lorcana-cards"
     >
       <Column :frozen="true" :sortable="true" class="bold min-w-64" field="name" header="Name"/>
-      <Column :sortable="true" field="setNumber" header="Number"/>
+      <Column :sortable="true" field="setNumber" header="Set"/>
+      <Column :sortable="true" field="cardNumber" header="Number"/>
       <Column :sortable="true" field="inks" header="Ink"/>
       <Column :sortable="true" field="inkable" header="Inkable"/>
       <Column :sortable="true" field="types" header="Type"/>

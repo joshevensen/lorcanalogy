@@ -16,6 +16,7 @@
     "@nuxthub/core": "^0.8.17",
     "@primeuix/themes": "^1.0.0",
     "@tailwindcss/vite": "^4.0.9",
+    "axios": "^1.8.2",
     "chart.js": "^4.4.8",
     "nuxt": "^3.15.4",
     "primeicons": "^7.0.0",

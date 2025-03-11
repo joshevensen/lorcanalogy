@@ -5,7 +5,7 @@ import {set4Cards} from '~/data/set4'
 import {set5Cards} from '~/data/set5'
 import {set6Cards} from '~/data/set6'
 import {set7Cards} from '~/data/set7'
-import type {CARD} from "~/data/data.types"
+import type {CARD, MAPPED_CARD} from "~/data/data.types"
 import arraysInclude from "~/utils/arraysInclude";
 
 export default function useCards() {
@@ -124,30 +124,58 @@ export default function useCards() {
       return true;
     })
   })
-  const mappedCards = computed<any>(() => {
+  const mappedCards = computed((): MAPPED_CARD[] => {
     return filteredCards.value.map((card) => {
       return {
-        name: card.version ? `${card.name} | ${card.version}` : card.name,
-        inks: card.ink ? card.ink : card.inks ? card.inks.join(', ') : '',
-        inkable: card.inkwell ? 'Yes' : 'No',
-        rarity: useStartCase(card.rarity),
-        types: card.type.includes('Song') ? 'Song' : card.type.join(', '),
-        cost: card.cost,
-        strength: card.strength,
-        willpower: card.willpower,
-        lore: card.lore,
-        moveCost: card.move_cost,
+        id: `${card.set.code}-${card.collector_number}`,
         setName: card.set.name,
         setNumber: card.set.code,
         cardNumber: card.collector_number,
-        tcgPlayer: card.tcgplayer_id,
-        layout: card.layout,
-        image: card.image_uris.digital.normal,
+        name: card.name,
+        version: card.version,
+        fullName: card.version ? `${card.name} | ${card.version}` : card.name,
+        inks: card.ink ? card.ink : card.inks ? card.inks.join(', ') : '',
+        inkable: card.inkwell,
+        isDualInk: card.inks && card.inks?.length > 1,
+        firstInk: card.inks?.length ? card.inks[0] : card.ink,
+        secondInk: card.inks && card.inks[1],
+        rarity: useStartCase(card.rarity),
+        type: card.type.includes('Song') ? 'Song' : card.type.join(', '),
+        cost: card.cost,
+        lore: card.lore,
+        strength: card.strength,
+        willpower: card.willpower,
+        moveCost: card.move_cost,
         classifications: card.classifications && card.classifications.join(', '),
         keywords: card.keywords && card.keywords.join(', '),
+        text: card.text,
+        layout: card.layout,
+        image: card.image_uris.digital.normal,
+        tcgPlayer: card.tcgplayer_id,
       }
     })
   })
+
+  /**
+   * Methods
+   */
+  function convertTextToHTML(text: string | null): string {
+    if(!text) return '';
+
+    const newText = text.replace(/\r?\n/g, '</p> <p>')
+        .replace(/(\([^)]*\))/g, ``)
+        .replaceAll('{I}', '<strong>Ink</strong>')
+        .replaceAll('{E}', '<strong>Exert</strong>')
+        .replaceAll('{L}', '<strong>Lore</strong>')
+        .replaceAll('{S}', '<strong>Strength</strong>')
+        .replaceAll('Bodyguard', '<strong class="uppercase">$&</strong>')
+        .replaceAll('Support', '<strong>$&</strong>')
+        .replaceAll('Shift', '<strong>$&</strong>')
+        .replace(/\b[A-Z]+\b/g, `<span class="text-[110%] font-bold">$&</span>`)
+        .replace(/\r?\n/g, '</p> <p>');
+
+    return `<p>${newText}</p>`
+  }
 
   return {
     all,
@@ -165,5 +193,6 @@ export default function useCards() {
     rarityOptions,
     inkableOptions,
     dualSingleOptions,
+    convertTextToHTML,
   }
 }

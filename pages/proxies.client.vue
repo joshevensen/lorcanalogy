@@ -1,16 +1,18 @@
 <script lang="ts" setup>
-import type {CARD} from "~/data/data.types";
+import type {MAPPED_CARD} from "~/data/data.types";
 
 definePageMeta({title: "Print", layout: 'print'})
 
-const {all} = useCards();
+const {mappedCards} = useCards();
 
-const pages = ref<CARD[][]>([])
+const pages = ref<MAPPED_CARD[][]>([])
 const pageIndex = ref(0)
 const chunkSize = 9;
 
-for (let i = 0; i < all.length; i += chunkSize) {
-  const chunk = all.slice(i, i + chunkSize);
+const filteredCards = mappedCards.value;
+
+for (let i = 0; i < filteredCards.length; i += chunkSize) {
+  const chunk: MAPPED_CARD[] = filteredCards.slice(i, i + chunkSize);
   pages.value.push(chunk);
 }
 </script>

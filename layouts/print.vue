@@ -12,4 +12,7 @@
   size: auto;
   margin: 0;
 }
+body {
+  print-color-adjust:exact !important;
+}
 </style>

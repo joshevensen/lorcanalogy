@@ -53,12 +53,17 @@ function openFilters() {
         </div>
       </template>
 
-      <Column :sortable="true" class="font-bold min-w-64" field="name" header="Name"/>
+      <Column :sortable="true" class="font-bold min-w-64" field="fullName" header="Name"/>
       <Column :sortable="true" field="setNumber" header="Set"/>
       <Column :sortable="true" field="cardNumber" header="Number"/>
       <Column :sortable="true" field="inks" header="Ink"/>
-      <Column :sortable="true" field="inkable" header="Inkable"/>
-      <Column :sortable="true" field="types" header="Type"/>
+      <Column :sortable="true" field="inkable" header="Inkable">
+        <template #body="{data}">{{ data.inkable ? 'Yes' : 'No'}}</template>
+      </Column>
+      <Column :sortable="true" field="isDualInk" header="Dual Ink?">
+        <template #body="{data}">{{ data.isDualInk ? 'Yes' : 'No'}}</template>
+      </Column>
+      <Column :sortable="true" field="type" header="Type"/>
       <Column :sortable="true" field="rarity" header="Rarity"/>
       <Column :sortable="true" field="cost" header="Cost"/>
       <Column :sortable="true" field="lore" header="Lore"/>

@@ -48,7 +48,7 @@ export interface SET {
 export interface CARD {
   "id": string,
   "name": string,
-  "version"?: string,
+  "version"?: string | null,
   "layout": LAYOUT,
   "released_at": string,
   "image_uris": {
@@ -88,4 +88,32 @@ export interface CARD {
     "usd"?: string | null,
     "usd_foil"?: string | null,
   }
+}
+
+export interface MAPPED_CARD {
+  id: string;
+  setName: string;
+  setNumber: string;
+  cardNumber: string;
+  name: string;
+  version: string | null | undefined;
+  fullName: string;
+  inks: string;
+  inkable: boolean;
+  isDualInk: null | boolean
+  firstInk: INK | null;
+  secondInk: INK | null;
+  rarity: string;
+  type: string;
+  cost: number;
+  lore: number | null;
+  strength: number | null;
+  willpower: number | null;
+  moveCost: number | null;
+  classifications: null | string;
+  keywords: null | string;
+  text: string | null;
+  layout: "normal" | "landscape";
+  image: string;
+  tcgPlayer: number | null | undefined
 }

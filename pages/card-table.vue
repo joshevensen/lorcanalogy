@@ -163,17 +163,31 @@ function openFilters() {
       :rows="42"
       :value="mappedCards"
       currentPageReportTemplate="{first} to {last}"
+      exportFilename="lorcana-cards"
       paginator
-      paginatorPosition="both"
       paginatorTemplate="CurrentPageReport PrevPageLink PageLinks NextPageLink JumpToPageDropdown"
       removableSort
       scrollable
       size="small"
       sortMode="multiple"
       stripedRows
-      exportFilename="lorcana-cards"
     >
-      <Column :frozen="true" :sortable="true" class="bold min-w-64" field="name" header="Name"/>
+      <template #header>
+        <div class="flex items-center justify-between">
+
+          <p class="italic text-gray-400">{{ mappedCards.length }} of {{ allCards.length }} cards</p>
+
+          <div class="flex gap-3 items-center">
+            <UiButton class="hidden! sm:flex!" icon="download" label="Download" @click="exportCSV()"/>
+            <UiButton class="hidden! sm:flex!" icon="filter" label="Filters" @click="openFilters"/>
+
+            <UiButtonIcon class="sm:hidden!" icon="download" @click="exportCSV()"/>
+            <UiButtonIcon class="sm:hidden!" icon="filter" @click="openFilters"/>
+          </div>
+        </div>
+      </template>
+
+      <Column :sortable="true" class="bold min-w-64" field="name" header="Name"/>
       <Column :sortable="true" field="setNumber" header="Set"/>
       <Column :sortable="true" field="cardNumber" header="Number"/>
       <Column :sortable="true" field="inks" header="Ink"/>
@@ -186,21 +200,8 @@ function openFilters() {
       <Column :sortable="true" field="willpower" header="Willpower"/>
       <Column :sortable="true" field="moveCost" header="Move Cost"/>
 
-      <!-- Pagination -->
       <template #empty>
         <p class="py-12 text-center italic text-xl">Based on your filters there are no cards.</p>
-      </template>
-
-      <template #paginatorstart>
-        <p class="italic text-gray-400">{{ mappedCards.length }} of {{ allCards.length }} cards</p>
-      </template>
-
-      <template #paginatorend>
-        <div class="flex gap-3 items-center">
-          <UiButton icon="download" label="Download" @click="exportCSV()"/>
-          <UiButton icon="filter" label="Filters" @click="openFilters"/>
-          <!--          <UiButtonIcon icon="refresh" @click="resetFilters()"/>-->
-        </div>
       </template>
     </DataTable>
 

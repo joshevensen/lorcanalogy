@@ -1,16 +1,10 @@
 import {Sets} from '~/data/sets'
+import type {SET} from "~/data/data.types";
 
 export default function useSets() {
-  const cards = useCards();
-
-  const allWithCounts = Sets.map(set => {
-    return {
-      ...set,
-      counts: calculateCardCounts(cards.getFilteredCards('standard', 'name', set.code)),
-    }
-  })
+  const all: SET[] = Sets;
 
   return {
-    all: allWithCounts,
+    all,
   }
 }

@@ -18,59 +18,7 @@ export default function useCards() {
     ...set7Cards
   ]
 
-  type SORT_BY = 'name' | 'set' | 'ink' | 'type';
-
-  interface OPTIONS {
-    sortBY?: SORT_BY
-    hideEnchanted?: boolean;
-    hideDualInk?: boolean;
-    isDualInkOnly?: boolean;
-  }
-
-  function getFilteredCards(
-    set: string | null = null,
-    options?: OPTIONS = {
-      sortBy: 'name',
-      hideEnchanted: true,
-      hideDualInk: false,
-      isDualInkOnly: false,
-    }
-  ): CARD[] {
-    let cards: CARD[] = all;
-
-    if (set) {
-      cards = cards.filter(card => card.set.code === set)
-    }
-
-    if (options.hideEnchanted) {
-      cards = cards.filter(card => card.rarity !== 'Enchanted')
-    }
-
-    if (options.hideDualInk) {
-      cards = cards.filter(card => card.ink !== null)
-    }
-
-    if (options.isDualInkOnly) {
-      cards = cards.filter(card => card.ink === null)
-    }
-
-    switch (options.sortBy) {
-      case 'name':
-        cards = useSortBy(cards, ['name', 'version'])
-        break;
-      case 'set':
-        cards = useSortBy(cards, ['set.code', 'name', 'version'])
-        break;
-      case 'type':
-        cards = useSortBy(cards, ['type', 'name', 'version'])
-        break;
-    }
-
-    return cards;
-  }
-
   return {
     all,
-    getFilteredCards,
   }
 }

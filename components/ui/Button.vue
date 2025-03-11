@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import Button from 'primevue/button';
 
-defineProps<{
+withDefaults(defineProps<{
   label: string;
+  outlined?: boolean;
   icon?: string;
-}>()
+}>(), {
+  outlined: true,
+})
 </script>
 
 <template>
-  <Button :icon="`pi pi-${icon}`" :label outlined size="small"/>
+  <Button :icon="icon ? `pi pi-${icon}` : undefined" :label :outlined size="small"/>
 </template>

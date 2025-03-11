@@ -54,20 +54,20 @@ const toggle = (event: any) => {
         @click="toggle"
       />
     </div>
-  </header>
 
-  <!--  Page Menu-->
-  <Menu
-    v-if="menuItems"
-    id="overlay_menu"
-    ref="menu"
-    :model="menuItems"
-    :popup="true"
-    pt:root:class="bg-lorcana-parchment-0!"
-    pt:submenuLabel:class="p-0! border-b border-lorcana-parchment-500!"
-  >
-    <template #item="{ item }">
-      <NuxtLink v-if="item.to" :to="item.to" class="block py-1 px-2">{{ item.label }}</NuxtLink>
-    </template>
-  </Menu>
+    <!--  Page Menu-->
+    <Menu
+      v-if="menuItems"
+      id="overlay_menu"
+      ref="menu"
+      :model="menuItems"
+      :popup="true"
+      pt:root:class="bg-lorcana-parchment-0!"
+      pt:submenuLabel:class="p-0! border-b border-lorcana-parchment-500!"
+    >
+      <template #item="{ item }">
+        <NuxtLink v-if="item.to" :to="item.to" class="block py-1 px-2">{{ item.label }}</NuxtLink>
+      </template>
+    </Menu>
+  </header>
 </template>

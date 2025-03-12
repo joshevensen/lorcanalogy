@@ -7,6 +7,8 @@ const props = defineProps<{
 
 const {convertTextToHTML} = useCards();
 
+const isLandscape = props.card.layout === 'landscape';
+
 const firstInk = props.card.firstInk;
 const secondInk = props.card.secondInk;
 
@@ -153,72 +155,79 @@ const background = computed(() => {
       <p class="text-xs text-right uppercase font-bold">{{ card.type }}</p>
     </div>
 
-    <!--    Name -->
-    <div class="h-[1.25in] flex flex-col items-center justify-center px-[0.1in]">
-      <p class="text-3xl font-bold leading-none text-center">{{ card.name }}</p>
-      <p class="text-sm text-center font-semibold">{{ card.version }}</p>
-    </div>
+    <div :class="['h-[2.75in]', {'absolute top-[0.5in] bottom-[0.25in] inset-x-0': isLandscape}]">
+      <div :class="['h-full flex flex-col', {'-rotate-90': isLandscape}]">
+        <!--    Name -->
+        <div class="h-[1.25in] shrink flex flex-col items-center justify-center px-[0.1in]">
+          <p class="text-3xl font-bold leading-none text-center">{{ card.name }}</p>
+          <p class="text-sm text-center font-semibold">{{ card.version }}</p>
+        </div>
 
-    <!--    Ink Bar-->
-    <div class="shrink-0 relative h-[0.3in] flex justify-between items-center px-[0.1in] text-white bg-white border-t-4 border-white">
-      <div class="absolute inset-0 flex justify-stretch">
-        <div :class="`w-full ${firstInkDark}`"></div>
-        <div v-if="card.isDualInk" :class="`w-full ${secondInkDark}`"></div>
-      </div>
+        <!--    Ink Bar-->
+        <div class="shrink-0 relative h-[0.3in] flex justify-between items-center px-[0.1in] text-white bg-white border-t-4 border-white">
+          <div class="absolute inset-0 flex justify-stretch">
+            <div :class="`w-full ${firstInkDark}`"></div>
+            <div v-if="card.isDualInk" :class="`w-full ${secondInkDark}`"></div>
+          </div>
 
-      <p class="relative z-10 text-[0.1375in]">{{ card.inks }}</p>
+          <div class="absolute -top-1.5 left-[0.0625in] z-10 flex items-center">
+            <PrintCardIcon
+              :value="card.moveCost"
+              alt="Move Cost"
+              heightClass="h-[0.4in]"
+              image="/icons/card-parts/move-cost.png"
+              widthClass="w-[0.3in]"
+            />
+          </div>
 
-      <div class="absolute -top-1.5 right-[0.0625in] z-10 flex items-center">
-        <PrintCardIcon
-          :value="card.strength"
-          alt="Strength"
-          heightClass="h-[0.4in]"
-          image="/icons/card-parts/strength.png"
-          widthClass="w-[0.4in]"
-        />
-        <PrintCardIcon
-          :value="card.willpower"
-          alt="Willpower"
-          heightClass="h-[0.4in]"
-          image="/icons/card-parts/willpower.png"
-          widthClass="w-[0.33in]"
-        />
-        <PrintCardIcon
-          :value="card.moveCost"
-          alt="Move Cost"
-          heightClass="h-[0.4in]"
-          image="/icons/card-parts/move-cost.png"
-          widthClass="w-[0.3in]"
-        />
-      </div>
-    </div>
+          <p :class="['relative z-10 w-full text-[0.1375in]', {'text-center': isLandscape}]">{{ card.inks }}</p>
 
-    <!--    Classification-->
-    <div class="shrink-0 relative basis-[0.125in] flex items-center px-[0.1in] bg-white border-b-4 border-white">
-      <div class="absolute inset-0 flex justify-stretch">
-        <div :class="`w-full ${firstInkLight}`"></div>
-        <div v-if="card.isDualInk" :class="`w-full ${secondInkLight}`"></div>
-      </div>
+          <div class="absolute -top-1.5 right-[0.0625in] z-10 flex items-center">
+            <PrintCardIcon
+              :value="card.strength"
+              alt="Strength"
+              heightClass="h-[0.4in]"
+              image="/icons/card-parts/strength.png"
+              widthClass="w-[0.4in]"
+            />
+            <PrintCardIcon
+              :value="card.willpower"
+              alt="Willpower"
+              heightClass="h-[0.4in]"
+              image="/icons/card-parts/willpower.png"
+              widthClass="w-[0.33in]"
+            />
+          </div>
+        </div>
 
-      <p class="relative z-10 font-semibold text-[6pt]">{{ card.classifications }}</p>
-    </div>
+        <!--    Classification-->
+        <div class="shrink-0 relative h-[0.125in] flex items-center px-[0.1in] bg-white border-b-4 border-white">
+          <div class="absolute inset-0 flex justify-stretch">
+            <div :class="`w-full ${firstInkLight}`"></div>
+            <div v-if="card.isDualInk" :class="`w-full ${secondInkLight}`"></div>
+          </div>
 
-    <!--    Text-->
-    <div class="grow relative py-[0.0625in] pl-[0.1in] pr-[0.25in]">
-      <div class="space-y-2 text-[6.5pt]" v-html="convertTextToHTML(card.text)"></div>
-      <div class="absolute inset-y-0 right-0 w-[0.25in] flex flex-col justify-center gap-1 items-center">
-        <img
-          v-for="index in Number(card.lore)"
-          :key="index"
-          alt="Lore"
-          class="w-[0.125in]"
-          src="/icons/card-parts/lore.png"
-        />
+          <p class="relative z-10 font-semibold text-[6pt]">{{ card.classifications }}</p>
+        </div>
+
+        <!--    Text-->
+        <div :class="['grow-1 relative py-[0.0625in] pl-[0.1in] pr-[0.25in]', {'w-[2.75in]': isLandscape}]">
+          <div class="space-y-1 text-[6.5pt]" v-html="convertTextToHTML(card.text)"></div>
+          <div class="absolute inset-y-0 right-0 w-[0.25in] flex flex-col justify-center gap-1 items-center">
+            <img
+              v-for="index in Number(card.lore)"
+              :key="index"
+              alt="Lore"
+              class="w-[0.125in]"
+              src="/icons/card-parts/lore.png"
+            />
+          </div>
+        </div>
       </div>
     </div>
 
     <!--    Footer-->
-    <div class="absolute bottom-0 inset-x-0 p-[0.0625in] flex justify-between items-center">
+    <div class="absolute bottom-0 inset-x-0 h-[0.25in] px-[0.1in] flex justify-between items-center">
       <p class="flex items-center gap-1 text-[7pt] text-gray-600">{{ card.id }} - {{ card.rarity }}</p>
       <p class="text-[6pt] text-gray-600">For personal use only</p>
     </div>

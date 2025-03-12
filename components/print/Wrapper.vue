@@ -8,11 +8,11 @@ const slots = useSlots();
 
 <template>
   <div class="mb-4 print:hidden">
-    <div v-if="slots.top" class="mt-12 content-width page-padding">
+    <div v-if="slots.top" class="mt-6 content-width page-padding">
       <slot name="top"/>
     </div>
 
-    <div class="mt-12 mb-8 flex justify-center">
+    <div class="mt-4 mb-8 flex justify-center">
       <UiButton :outlined="false" label="Print Pages" @click="printPage"/>
     </div>
 

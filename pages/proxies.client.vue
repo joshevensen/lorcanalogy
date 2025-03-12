@@ -10,8 +10,8 @@ const pages = ref<MAPPED_CARD[][]>([])
 const chunkSize = 9;
 const pageIndex = ref(0)
 
-for (let i = 0; i < cards.mappedCards.value.length; i += chunkSize) {
-  const chunk: MAPPED_CARD[] = cards.mappedCards.value.slice(i, i + chunkSize);
+for (let i = 0; i < cards.mappedCards.value.slice(408, 612).length; i += chunkSize) {
+  const chunk: MAPPED_CARD[] = cards.mappedCards.value.slice(408, 612).slice(i, i + chunkSize);
   pages.value.push(chunk);
 }
 </script>

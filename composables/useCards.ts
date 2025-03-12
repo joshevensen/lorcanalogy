@@ -160,19 +160,28 @@ export default function useCards() {
    * Methods
    */
   function convertTextToHTML(text: string | null): string {
-    if(!text) return '';
+    if (!text) return '';
 
     const newText = text.replace(/\r?\n/g, '</p> <p>')
-        .replace(/(\([^)]*\))/g, ``)
-        .replaceAll('{I}', '<strong>Ink</strong>')
-        .replaceAll('{E}', '<strong>Exert</strong>')
-        .replaceAll('{L}', '<strong>Lore</strong>')
-        .replaceAll('{S}', '<strong>Strength</strong>')
-        .replaceAll('Bodyguard', '<strong class="uppercase">$&</strong>')
-        .replaceAll('Support', '<strong>$&</strong>')
-        .replaceAll('Shift', '<strong>$&</strong>')
-        .replace(/\b[A-Z]+\b/g, `<span class="text-[110%] font-bold">$&</span>`)
-        .replace(/\r?\n/g, '</p> <p>');
+      .replace(/(\([^)]*\))/g, ``) // Remove keyword explanations
+      .replaceAll('{I}', 'Ink')
+      .replaceAll('{E}', 'Exert')
+      .replaceAll('{L}', 'Lore')
+      .replaceAll('{S}', 'Strength')
+      .replaceAll('Bodyguard', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Challenger', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Evasive', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Reckless', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Resist', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Rush', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Shift', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Singer', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Sing Together', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Support', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Vanish', '<strong class="uppercase">$&</strong>')
+      .replaceAll('Ward', '<strong class="uppercase">$&</strong>')
+      .replace(/\b[A-Z]+\b/g, `<span class="text-[110%] font-bold">$&</span>`) // All Caps
+      .replace(/\r?\n/g, '</p> <p>'); // Line Brakes
 
     return `<p>${newText}</p>`
   }

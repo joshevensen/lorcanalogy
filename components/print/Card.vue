@@ -21,6 +21,7 @@ const firstInkDark = computed(() => {
 
   return 'bg-gray-300';
 })
+
 const secondInkDark = computed(() => {
   if(props.card.secondInk === 'Amber') return 'bg-amber-600';
   if(props.card.secondInk === 'Amethyst') return 'bg-purple-900';
@@ -54,7 +55,9 @@ const secondInkLight = computed(() => {
   return 'bg-gray-100';
 })
 
-console.log('layout', props.card.layout);
+
+// TODO: Create Location card
+// TODO: Fix icons
 </script>
 
 <template>

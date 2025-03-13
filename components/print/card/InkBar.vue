@@ -32,13 +32,13 @@ const secondInkDark = computed(() => {
 </script>
 
 <template>
-  <div class="shrink-0 relative h-[0.3in] flex justify-between items-center px-[0.1in] text-white bg-white border-t-4 border-white">
+  <div class="relative flex justify-between items-center px-[0.1in] bg-white border-t-4 border-white text-white">
     <div class="absolute inset-0 flex justify-stretch">
       <div :class="`w-full ${firstInkDark}`"></div>
       <div v-if="card.isDualInk" :class="`w-full ${secondInkDark}`"></div>
     </div>
 
-    <div class="absolute -top-1.5 left-[0.0625in] z-10 flex items-center">
+    <div v-if="card.moveCost" class="absolute -top-1.5 left-[0.0625in] z-10 flex items-center">
       <PrintCardIcon
         :value="card.moveCost"
         alt="Move Cost"
@@ -48,10 +48,11 @@ const secondInkDark = computed(() => {
       />
     </div>
 
-    <p class="relative z-10 w-full text-[0.1375in]">{{ card.inks }}</p>
+    <p :class="['relative z-10 w-full text-[0.1375in]', {'text-center': card.moveCost}]">{{ card.inks }}</p>
 
     <div class="absolute -top-1.5 right-[0.0625in] z-10 flex items-center">
       <PrintCardIcon
+          v-if="card.strength"
         :value="card.strength"
         alt="Strength"
         heightClass="h-[0.4in]"
@@ -59,6 +60,7 @@ const secondInkDark = computed(() => {
         widthClass="w-[0.4in]"
       />
       <PrintCardIcon
+          v-if="card.willpower"
         :value="card.willpower"
         alt="Willpower"
         heightClass="h-[0.4in]"

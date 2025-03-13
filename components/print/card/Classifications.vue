@@ -32,7 +32,7 @@ const secondInkLight = computed(() => {
 </script>
 
 <template>
-  <div class="shrink-0 relative h-[0.125in] flex items-center px-[0.1in] bg-white border-b-4 border-white">
+  <div class="relative flex items-center px-[0.1in] bg-white border-b-4 border-white">
     <div class="absolute inset-0 flex justify-stretch">
       <div :class="`w-full ${firstInkLight}`"></div>
       <div v-if="card.isDualInk" :class="`w-full ${secondInkLight}`"></div>

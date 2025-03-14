@@ -42,4 +42,9 @@
     .header-footer {
         @apply fixed z-50 left-0 right-0 bg-lorcana-parchment-200 border-lorcana-parchment-800;
     }
+
+    .text-vertical {
+        @apply transform-[rotate(180deg)];
+        writing-mode: vertical-rl;
+    }
 }

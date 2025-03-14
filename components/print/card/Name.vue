@@ -1,14 +1,20 @@
 <script lang="ts" setup>
 import type {MAPPED_CARD} from "~/app.types";
 
-defineProps<{
+const props = defineProps<{
   card: MAPPED_CARD,
 }>()
+
+const isLandscape = props.card.layout === 'landscape';
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center px-[0.1in]">
-    <p class="text-3xl font-bold leading-none text-center">{{ card.name }}</p>
-    <p class="text-sm text-center font-semibold">{{ card.version }}</p>
+  <div :class="['flex items-center justify-center', !isLandscape && 'flex-col']">
+    <p :class="['text-3xl font-bold leading-none text-center', isLandscape && 'text-vertical']">
+      {{ card.name }}
+    </p>
+    <p :class="['text-sm text-center font-semibold', isLandscape && 'text-vertical']">
+      {{ card.version }}
+    </p>
   </div>
 </template>

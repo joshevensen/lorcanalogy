@@ -22,8 +22,8 @@ export default function useCards() {
       if (option.value !== 'Enchanted') return option.value;
     }).filter(value => value !== undefined),
     sets: setOptions.map(option => option.value),
-    inkable: inkableOptions[0].value,
-    dualSingle: dualSingleOptions[0].value,
+    inkable: inkableOptions.map(option => option.value),
+    dualSingle: dualSingleOptions.map(option => option.value),
   })
 
   /**
@@ -64,16 +64,24 @@ export default function useCards() {
       if (!filters.value.sets.includes(card.set.code)) return false;
 
       // Inkable
-      if (filters.value.inkable === 'inkable' && !card.inkwell) return false;
-      if (filters.value.inkable === 'not_inkable' && card.inkwell) return false;
+      if (filters.value.inkable.length === 0) return false;
 
-      // Dual vs Single Ink
-      if (filters.value.dualSingle === 'single') {
-        if (!card.ink || (card.inks && card.inks?.length > 1)) return false;
+      if (filters.value.inkable.length === 1) {
+        if (filters.value.inkable.includes('inkable') && !card.inkwell) return false;
+        if (filters.value.inkable.includes('not_inkable') && card.inkwell) return false;
       }
 
-      if (filters.value.dualSingle === 'dual') {
-        if (card.ink || (card.inks && card.inks?.length > 1)) return false;
+      // Dual vs Single Ink
+      if (filters.value.dualSingle.length === 0) return false;
+
+      if (filters.value.dualSingle.length === 1) {
+        if (filters.value.dualSingle.includes('single')) {
+          if (!card.ink || card.inks && card.inks.length > 1) return false;
+        }
+
+        if (filters.value.dualSingle.includes('dual')) {
+          if (card.ink || card.inks && card.inks.length < 2) return false;
+        }
       }
 
       return true;

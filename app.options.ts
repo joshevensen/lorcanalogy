@@ -37,15 +37,13 @@ export const rarityOptions: OPTION[] = [
 ];
 
 export const inkableOptions: OPTION[] = [
-  {label: 'Inkable & Not Inkable', value: 'both'},
   {label: 'Inkable', value: 'inkable'},
   {label: 'Not Inkable', value: 'not_inkable'},
 ];
 
 export const dualSingleOptions: OPTION[] = [
-  {label: 'Single & Dual Inks', value: 'both'},
-  {label: 'Single Inks Only', value: 'single'},
-  {label: 'Dual Inks Only', value: 'dual'},
+  {label: 'Single Ink', value: 'single'},
+  {label: 'Dual Ink', value: 'dual'},
 ];
 
 export const setOptions: OPTION[] = sets.all.map(set => {

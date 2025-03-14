@@ -88,8 +88,8 @@ export interface FILTERS {
   types: string[],
   rarities: string[],
   sets: string[],
-  inkable: string,
-  dualSingle: string
+  inkable: string[],
+  dualSingle: string[]
 }
 
 export interface MAPPED_CARD {

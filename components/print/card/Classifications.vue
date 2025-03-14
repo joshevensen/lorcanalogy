@@ -5,6 +5,8 @@ const props = defineProps<{
   card: MAPPED_CARD,
 }>()
 
+const isLandscape = props.card.layout === 'landscape';
+
 const firstInkClasses = computed(() => {
   const ink = props.card.firstInk;
   if (ink === 'Amber') return 'bg-lorcana-amber/40';
@@ -32,12 +34,14 @@ const secondInkClasses = computed(() => {
 </script>
 
 <template>
-  <div class="relative flex items-center px-[0.1in] bg-white border-b-4 border-white">
+  <div class="relative flex items-center bg-white">
     <div class="absolute inset-0 flex justify-stretch">
       <div :class="`w-full ${firstInkClasses}`"></div>
       <div v-if="card.isDualInk" :class="`w-full ${secondInkClasses}`"></div>
     </div>
 
-    <p class="relative z-10 font-semibold text-[6pt]">{{ card.classifications }}</p>
+    <p :class="['relative z-10 font-semibold text-[6pt]', isLandscape && 'text-vertical']">{{
+        card.classifications
+      }}</p>
   </div>
 </template>

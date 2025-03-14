@@ -5,6 +5,8 @@ const props = defineProps<{
   card: MAPPED_CARD,
 }>()
 
+const isLandscape = props.card.layout === 'landscape';
+
 const firstInkClasses = computed(() => {
   const ink = props.card.firstInk;
 
@@ -33,13 +35,20 @@ const secondInkClasses = computed(() => {
 </script>
 
 <template>
-  <div class="relative flex justify-between items-center px-[0.1in] bg-white border-t-4 border-white text-white">
+  <div class="relative flex justify-between items-center text-white">
     <div class="absolute inset-0 flex justify-stretch">
       <div :class="`w-full ${firstInkClasses}`"></div>
       <div v-if="card.isDualInk" :class="`w-full ${secondInkClasses}`"></div>
     </div>
 
-    <div v-if="card.moveCost" class="absolute -top-1.5 left-[0.0625in] z-10 flex items-center">
+    <p :class="['relative z-10 w-full text-[0.1375in]', {'text-center': card.moveCost}, isLandscape && 'text-vertical']">
+      {{ card.inks }}
+    </p>
+
+    <div
+      v-if="card.moveCost"
+      :class="['absolute z-10 flex items-center', isLandscape ? '-left-1 bottom-[0.0625in] transform-[rotate(-90deg)]' : '-top-1.5 left-[0.0625in]']"
+    >
       <PrintCardIcon
         :value="card.moveCost"
         alt="Move Cost"
@@ -49,11 +58,7 @@ const secondInkClasses = computed(() => {
       />
     </div>
 
-    <p :class="['relative z-10 w-full text-[0.1375in]', {'text-center': card.moveCost}]">
-      {{ card.inks }}
-    </p>
-
-    <div class="absolute -top-1.5 right-[0.0625in] z-10 flex items-center">
+    <div :class="['absolute z-10 flex items-center', isLandscape ? '-left-1 top-[0.0625in] transform-[rotate(-90deg)]' : '-top-1.5 right-[0.0625in]']">
       <PrintCardIcon
         v-if="card.strength"
         :value="card.strength"

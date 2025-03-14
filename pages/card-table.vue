@@ -88,6 +88,7 @@ function openFilters() {
         <UiSelect
           v-model="cards.selectedInks"
           :options="cards.inkOptions"
+          prefix="Include"
           allLabel="All inks"
           multiple
           placeholder="choose ink..."
@@ -95,6 +96,7 @@ function openFilters() {
         <UiSelect
           v-model="cards.selectedTypes"
           :options="cards.typeOptions"
+          prefix="Include"
           allLabel="All types"
           multiple
           placeholder="choose type..."
@@ -102,6 +104,7 @@ function openFilters() {
         <UiSelect
           v-model="cards.selectedRarities"
           :options="cards.rarityOptions"
+          prefix="Include"
           allLabel="All rarities"
           multiple
           placeholder="choose rarity..."
@@ -109,12 +112,13 @@ function openFilters() {
         <UiSelect
           v-model="cards.selectedSets"
           :options="setOptions"
+          prefix="Include"
           allLabel="All sets"
           multiple
           placeholder="choose set..."
         />
-        <UiSelect v-model="cards.selectedInkable" :options="cards.inkableOptions"/>
-        <UiSelect v-model="cards.selectedDualSingleInk" :options="cards.dualSingleOptions"/>
+        <UiSelect v-model="cards.selectedInkable" prefix="Include" :options="cards.inkableOptions"/>
+        <UiSelect v-model="cards.selectedDualSingleInk" prefix="Include" :options="cards.dualSingleOptions"/>
       </div>
     </Drawer>
   </div>

@@ -6,14 +6,19 @@ definePageMeta({title: "Print", layout: 'print'})
 const cards = useCards();
 const {selectOptions: setOptions} = useSets();
 
-const pages = ref<MAPPED_CARD[][]>([])
 const chunkSize = 9;
-const pageIndex = ref(0)
+const pageIndex = ref(0);
 
-for (let i = 0; i < cards.mappedCards.value.slice(408, 612).length; i += chunkSize) {
-  const chunk: MAPPED_CARD[] = cards.mappedCards.value.slice(408, 612).slice(i, i + chunkSize);
-  pages.value.push(chunk);
-}
+const pages = computed(() => {
+  const pages = [];
+
+  for (let i = 0; i < cards.mappedCards.value.length; i += chunkSize) {
+    const chunk: MAPPED_CARD[] = cards.mappedCards.value.slice(i, i + chunkSize);
+    pages.push(chunk);
+  }
+
+  return pages
+})
 </script>
 
 <template>
@@ -24,11 +29,19 @@ for (let i = 0; i < cards.mappedCards.value.slice(408, 612).length; i += chunkSi
     </template>
 
     <template #side>
-      <h3>Filter Cards</h3>
+
+      <div class="flex flex-col gap-8">
+        <UiSelect
+            v-model="cards.selectedSort"
+            :options="cards.sortOptions"
+            prefix="Sort by"
+        />
+
       <div class="flex flex-col gap-4">
         <UiSelect
             v-model="cards.selectedInks"
             :options="cards.inkOptions"
+            prefix="Include"
             allLabel="All inks"
             multiple
             placeholder="choose ink..."
@@ -36,6 +49,7 @@ for (let i = 0; i < cards.mappedCards.value.slice(408, 612).length; i += chunkSi
         <UiSelect
             v-model="cards.selectedTypes"
             :options="cards.typeOptions"
+            prefix="Include"
             allLabel="All types"
             multiple
             placeholder="choose type..."
@@ -43,6 +57,7 @@ for (let i = 0; i < cards.mappedCards.value.slice(408, 612).length; i += chunkSi
         <UiSelect
             v-model="cards.selectedRarities"
             :options="cards.rarityOptions"
+            prefix="Include"
             allLabel="All rarities"
             multiple
             placeholder="choose rarity..."
@@ -50,12 +65,14 @@ for (let i = 0; i < cards.mappedCards.value.slice(408, 612).length; i += chunkSi
         <UiSelect
             v-model="cards.selectedSets"
             :options="setOptions"
+            prefix="Include"
             allLabel="All sets"
             multiple
             placeholder="choose set..."
         />
-        <UiSelect v-model="cards.selectedInkable" :options="cards.inkableOptions"/>
-        <UiSelect v-model="cards.selectedDualSingleInk" :options="cards.dualSingleOptions"/>
+        <UiSelect v-model="cards.selectedInkable" prefix="Include" :options="cards.inkableOptions"/>
+        <UiSelect v-model="cards.selectedDualSingleInk" prefix="Include" :options="cards.dualSingleOptions"/>
+      </div>
       </div>
     </template>
 

@@ -25,6 +25,14 @@ export default function useCards() {
    * Options
    */
 
+  const sortOptions = [
+    {label: 'Inkable', value: 'inkable'},
+    {label: 'Name', value: 'name'},
+    {label: 'Rarity', value: 'rarity'},
+    {label: 'Set', value: 'set'},
+    {label: 'Type', value: 'type'},
+  ]
+
   const inkOptions = [
     {label: 'Amber', value: 'Amber'},
     {label: 'Amethyst', value: 'Amethyst'},
@@ -63,6 +71,7 @@ export default function useCards() {
    * Defaults
    */
 
+  const sortDefault = 'set';
   const inkDefault = inkOptions.map(option => option.value);
   const typeDefault = typeOptions.map(option => option.value);
   const rarityDefault = rarityOptions.map(option => {
@@ -76,6 +85,7 @@ export default function useCards() {
    */
 
   const searchTerm = ref('');
+  const selectedSort = ref<string>(sortDefault);
   const selectedInks = ref<string[]>(inkDefault);
   const selectedTypes = ref<string[]>(typeDefault);
   const selectedRarities = ref<string[]>(rarityDefault);
@@ -155,6 +165,9 @@ export default function useCards() {
       }
     })
   })
+  const sortedCards = computed((): MAPPED_CARD[] => {
+    return mappedCards.value;
+  })
 
   /**
    * Methods
@@ -191,12 +204,14 @@ export default function useCards() {
     filteredCards,
     mappedCards,
     searchTerm,
+    selectedSort,
     selectedInks,
     selectedTypes,
     selectedRarities,
     selectedSets,
     selectedInkable,
     selectedDualSingleInk,
+    sortOptions,
     inkOptions,
     typeOptions,
     rarityOptions,

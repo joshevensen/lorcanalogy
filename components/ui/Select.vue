@@ -15,6 +15,7 @@ withDefaults(defineProps<{
   options: OPTION[];
   multiple?: boolean;
   placeholder?: string;
+  prefix?: string;
   allLabel?: string;
 }>(), {
   allLabel: 'All'
@@ -23,8 +24,8 @@ withDefaults(defineProps<{
 
 <template>
   <InputGroup>
-    <InputGroupAddon>
-      <p class="text-sm">Include</p>
+    <InputGroupAddon v-if="prefix">
+      <p class="text-sm">{{ prefix }}</p>
     </InputGroupAddon>
 
     <MultiSelect

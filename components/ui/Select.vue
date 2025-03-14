@@ -3,11 +3,7 @@ import Select from 'primevue/select';
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import MultiSelect from "primevue/multiselect";
-
-export interface OPTION {
-  label: string;
-  value: string | number | undefined;
-}
+import type {OPTION} from "~/app.types";
 
 const model = defineModel();
 

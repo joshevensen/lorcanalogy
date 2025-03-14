@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type {MAPPED_CARD} from "~/data/data.types";
+import type {MAPPED_CARD} from "~/app.types";
 
 defineProps<{
   card: MAPPED_CARD,

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type {SET} from "~/data/data.types";
+import type {SET} from "~/app.types";
 
 const cards = useCards();
 
@@ -7,7 +7,7 @@ const props = defineProps<{
   set: SET
 }>()
 
-const setCards = cards.getFilteredCards(props.set.code);
+const setCards = cards.filtered(props.set.code);
 const counts = calculateCardCounts(setCards)
 </script>
 

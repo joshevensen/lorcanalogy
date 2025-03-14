@@ -13,7 +13,7 @@ withDefaults(defineProps<{
 
 <template>
   <div v-if="value" :class="`relative ${widthClass} ${heightClass} flex justify-center items-center`">
-    <img
+    <NuxtImg
       :class="`absolute z-0 ${widthClass} ${heightClass} top-0 left-1/2 -translate-x-1/2`"
         :src="image"
         :alt="alt"

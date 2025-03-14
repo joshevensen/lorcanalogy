@@ -1,24 +1,17 @@
 <script lang="ts" setup>
-import type {MAPPED_CARD} from "~/data/data.types";
-
-definePageMeta({title: "Print", layout: 'print'})
+definePageMeta({title: "Proxies", layout: 'print'})
 
 const cards = useCards();
-const {selectOptions: setOptions} = useSets();
-
-const chunkSize = 9;
+const showFilters = ref(false);
 const pageIndex = ref(0);
 
-const pages = computed(() => {
-  const pages = [];
+function printCards() {
+  window.print();
+}
 
-  for (let i = 0; i < cards.mappedCards.value.length; i += chunkSize) {
-    const chunk: MAPPED_CARD[] = cards.mappedCards.value.slice(i, i + chunkSize);
-    pages.push(chunk);
-  }
-
-  return pages
-})
+function openFilters() {
+  showFilters.value = true;
+}
 </script>
 
 <template>
@@ -28,74 +21,42 @@ const pages = computed(() => {
       <p class="text-3xl text-center">Don't use</p>
     </template>
 
-    <template #side>
-
-      <div class="flex flex-col gap-8">
-        <UiSelect
-            v-model="cards.selectedSort"
-            :options="cards.sortOptions"
-            prefix="Sort by"
-        />
-
-      <div class="flex flex-col gap-4">
-        <UiSelect
-            v-model="cards.selectedInks"
-            :options="cards.inkOptions"
-            prefix="Include"
-            allLabel="All inks"
-            multiple
-            placeholder="choose ink..."
-        />
-        <UiSelect
-            v-model="cards.selectedTypes"
-            :options="cards.typeOptions"
-            prefix="Include"
-            allLabel="All types"
-            multiple
-            placeholder="choose type..."
-        />
-        <UiSelect
-            v-model="cards.selectedRarities"
-            :options="cards.rarityOptions"
-            prefix="Include"
-            allLabel="All rarities"
-            multiple
-            placeholder="choose rarity..."
-        />
-        <UiSelect
-            v-model="cards.selectedSets"
-            :options="setOptions"
-            prefix="Include"
-            allLabel="All sets"
-            multiple
-            placeholder="choose set..."
-        />
-        <UiSelect v-model="cards.selectedInkable" prefix="Include" :options="cards.inkableOptions"/>
-        <UiSelect v-model="cards.selectedDualSingleInk" prefix="Include" :options="cards.dualSingleOptions"/>
-      </div>
-      </div>
-    </template>
-
     <div class="w-[8.5in] mx-auto">
-      <Paginator v-model:first="pageIndex" :rows="1" :totalRecords="pages.length"/>
+      <Paginator
+        v-model:first="pageIndex"
+        :rows="1"
+        :totalRecords="cards.byPage.value.length"
+        template="JumpToPageDropdown"
+      >
+        <template #end>
+          <div class="flex items-center gap-2">
+            <p class="mr-2 italic text-gray-500">{{ cards.sorted.value.length }} cards & {{ cards.byPage.value.length }}
+              pages</p>
+            <UiButton class="hidden! sm:flex!" icon="filter" label="Filters" @click="openFilters"/>
+            <UiButton :outlined="false" label="Print Cards" @click="printCards"/>
+          </div>
+        </template>
+      </Paginator>
 
-      <div class="w-[8.5in] h-[11in] my-4 bg-white overflow-x-auto">
+      <div class="my-4 bg-white overflow-x-auto">
         <PrintPage>
           <PrintCardGrid>
-            <PrintCard v-for="card in pages[pageIndex]" :key="card.id" :card="card"/>
+            <PrintCard v-for="card in cards.byPage.value[pageIndex]" :key="card.id" :card="card"/>
           </PrintCardGrid>
         </PrintPage>
       </div>
 
-      <Paginator v-model:first="pageIndex" :rows="1" :totalRecords="pages.length"/>
+      <Paginator v-model:first="pageIndex" :rows="1" :totalRecords="cards.byPage.value.length"/>
     </div>
 
+    <Filters v-model:visible="showFilters" :filters="cards.filters.value"/>
+
     <template #printable>
-      <PrintPage v-for="(page, index) in pages" :key="index">
-        <PrintCardGrid>
-          <PrintCard v-for="card in page" :key="card.id" :card="card"/>
-        </PrintCardGrid>
-      </PrintPage>
+      <LazyPrintPage v-for="(page, index) in cards.byPage.value" :key="index">
+        <LazyPrintCardGrid>
+          <LazyPrintCard v-for="card in page" :key="card.id" :card="card"/>
+        </LazyPrintCardGrid>
+      </LazyPrintPage>
     </template>
   </PrintWrapper>
 </template>

@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import type {CARD} from "~/data/data.types";
+import type {CARD} from "~/app.types";
 
 const props = defineProps<{
   card: CARD;

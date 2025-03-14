@@ -1,31 +1,32 @@
 <script lang="ts" setup>
-import type {MAPPED_CARD} from "~/data/data.types";
+import type {MAPPED_CARD} from "~/app.types";
 
 const props = defineProps<{
   card: MAPPED_CARD,
 }>()
 
-const firstInk = props.card.firstInk;
-const secondInk = props.card.secondInk;
+const firstInkClasses = computed(() => {
+  const ink = props.card.firstInk;
 
-const firstInkDark = computed(() => {
-  if (firstInk === 'Amber') return 'bg-lorcana-amber';
-  if (firstInk === 'Amethyst') return 'bg-lorcana-amethyst';
-  if (firstInk === 'Emerald') return 'bg-lorcana-emerald';
-  if (firstInk === 'Ruby') return 'bg-lorcana-ruby';
-  if (firstInk === 'Sapphire') return 'bg-lorcana-sapphire';
-  if (firstInk === 'Steel') return 'bg-lorcana-steel';
+  if (ink === 'Amber') return 'bg-lorcana-amber';
+  if (ink === 'Amethyst') return 'bg-lorcana-amethyst';
+  if (ink === 'Emerald') return 'bg-lorcana-emerald';
+  if (ink === 'Ruby') return 'bg-lorcana-ruby';
+  if (ink === 'Sapphire') return 'bg-lorcana-sapphire';
+  if (ink === 'Steel') return 'bg-lorcana-steel';
 
   return 'bg-gray-300';
 })
 
-const secondInkDark = computed(() => {
-  if (secondInk === 'Amber') return 'bg-lorcana-amber';
-  if (secondInk === 'Amethyst') return 'bg-lorcana-amethyst';
-  if (secondInk === 'Emerald') return 'bg-lorcana-emerald';
-  if (secondInk === 'Ruby') return 'bg-lorcana-ruby';
-  if (secondInk === 'Sapphire') return 'bg-lorcana-sapphire';
-  if (secondInk === 'Steel') return 'bg-lorcana-steel';
+const secondInkClasses = computed(() => {
+  const ink = props.card.secondInk;
+
+  if (ink === 'Amber') return 'bg-lorcana-amber';
+  if (ink === 'Amethyst') return 'bg-lorcana-amethyst';
+  if (ink === 'Emerald') return 'bg-lorcana-emerald';
+  if (ink === 'Ruby') return 'bg-lorcana-ruby';
+  if (ink === 'Sapphire') return 'bg-lorcana-sapphire';
+  if (ink === 'Steel') return 'bg-lorcana-steel';
 
   return 'bg-gray-300';
 })
@@ -34,8 +35,8 @@ const secondInkDark = computed(() => {
 <template>
   <div class="relative flex justify-between items-center px-[0.1in] bg-white border-t-4 border-white text-white">
     <div class="absolute inset-0 flex justify-stretch">
-      <div :class="`w-full ${firstInkDark}`"></div>
-      <div v-if="card.isDualInk" :class="`w-full ${secondInkDark}`"></div>
+      <div :class="`w-full ${firstInkClasses}`"></div>
+      <div v-if="card.isDualInk" :class="`w-full ${secondInkClasses}`"></div>
     </div>
 
     <div v-if="card.moveCost" class="absolute -top-1.5 left-[0.0625in] z-10 flex items-center">
@@ -48,11 +49,13 @@ const secondInkDark = computed(() => {
       />
     </div>
 
-    <p :class="['relative z-10 w-full text-[0.1375in]', {'text-center': card.moveCost}]">{{ card.inks }}</p>
+    <p :class="['relative z-10 w-full text-[0.1375in]', {'text-center': card.moveCost}]">
+      {{ card.inks }}
+    </p>
 
     <div class="absolute -top-1.5 right-[0.0625in] z-10 flex items-center">
       <PrintCardIcon
-          v-if="card.strength"
+        v-if="card.strength"
         :value="card.strength"
         alt="Strength"
         heightClass="h-[0.4in]"
@@ -60,7 +63,7 @@ const secondInkDark = computed(() => {
         widthClass="w-[0.4in]"
       />
       <PrintCardIcon
-          v-if="card.willpower"
+        v-if="card.willpower"
         :value="card.willpower"
         alt="Willpower"
         heightClass="h-[0.4in]"

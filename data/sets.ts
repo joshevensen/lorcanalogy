@@ -1,4 +1,4 @@
-import type {SET} from "~/data/data.types";
+import type {SET} from "~/data.types";
 
 export const Sets: SET[] = [
   {

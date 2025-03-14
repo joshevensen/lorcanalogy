@@ -53,7 +53,7 @@ const updatedAt = formatDate(page.value?.updated);
     <div class="flex gap-16">
       <div>
         <ContentRenderer :value="page"/>
-        <Disclaimer class="mt-12" toggleable/>
+        <LayoutDisclaimer class="mt-12" toggleable/>
       </div>
 
       <aside class="hidden md:block basis-60 shrink-0 pt-24">

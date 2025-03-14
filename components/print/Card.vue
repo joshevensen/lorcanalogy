@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type {MAPPED_CARD} from "~/data/data.types";
+import type {MAPPED_CARD} from "~/data.types";
 
 const props = defineProps<{
   card: MAPPED_CARD,
@@ -100,18 +100,18 @@ const background = computed(() => {
     </div>
 
     <!-- Landscape -->
-    <div v-if="isLandscape"
-         class="h-[2.5in] w-[3.5in] p-px pr-[3px] absolute left-[100%] bottom-0 transform-[rotate(-90deg)] origin-bottom-left flex flex-col">
-      <PrintCardHeader class="h-[0.4in] shrink-0 pr-[0.45in] pl-[0.1in]" :card="card"/>
-      <PrintCardName class="h-[0.75in] shrink" :card="card"/>
-      <PrintCardInkBar class="h-[0.3in] shrink-0" :card="card"/>
-      <PrintCardClassifications class="h-[0.15in] shrink-0" :card="card"/>
-      <PrintCardText class="grow-1" :card="card"/>
-      <PrintCardFooter class="h-[0.25in] shrink-0" :card="card"/>
-    </div>
+    <!--    <div v-if="isLandscape"-->
+    <!--         class="h-[2.5in] w-[3.5in] p-px pr-[3px] absolute left-[100%] bottom-0 transform-[rotate(-90deg)] origin-bottom-left flex flex-col">-->
+    <!--      <PrintCardHeader class="h-[0.4in] shrink-0 pr-[0.45in] pl-[0.1in]" :card="card"/>-->
+    <!--      <PrintCardName class="h-[0.75in] shrink" :card="card"/>-->
+    <!--      <PrintCardInkBar class="h-[0.3in] shrink-0" :card="card"/>-->
+    <!--      <PrintCardClassifications class="h-[0.15in] shrink-0" :card="card"/>-->
+    <!--      <PrintCardText class="grow-1" :card="card"/>-->
+    <!--      <PrintCardFooter class="h-[0.25in] shrink-0" :card="card"/>-->
+    <!--    </div>-->
 
     <!-- Portrait -->
-    <div v-else class="h-full flex flex-col p-px">
+    <div class="h-full flex flex-col p-px">
       <PrintCardHeader class="h-[0.4in] shrink-0 pl-[0.5in]" :card="card"/>
       <PrintCardName class="h-[1.25in] shrink" :card="card"/>
       <PrintCardInkBar class="h-[0.3in] shrink-0" :card="card"/>

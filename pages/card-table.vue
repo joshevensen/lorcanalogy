@@ -4,21 +4,16 @@ import Column from 'primevue/column';
 
 definePageMeta({title: "Cards Table", layout: 'table'})
 
-const {selectOptions: setOptions} = useSets();
 const cards = useCards();
 const table = ref();
-const visible = ref(false);
-
-/**
- * Functions
- */
+const showFilters = ref(false);
 
 function exportCSV() {
   table.value.exportCSV();
 }
 
 function openFilters() {
-  visible.value = true;
+  showFilters.value = true;
 }
 
 </script>
@@ -28,7 +23,7 @@ function openFilters() {
     <DataTable
       ref="table"
       :rows="42"
-      :value="cards.mappedCards.value"
+      :value="cards.filtered.value"
       currentPageReportTemplate="{first} to {last}"
       exportFilename="lorcana-cards"
       paginator
@@ -41,7 +36,7 @@ function openFilters() {
     >
       <template #header>
         <div class="flex items-center justify-between">
-          <p class="italic text-gray-400">{{ cards.mappedCards.value.length }} of {{ cards.all.length }} cards</p>
+          <p class="italic text-gray-400">{{ cards.filtered.value.length }} of {{ cards.all.length }} cards</p>
 
           <div class="flex gap-3 items-center">
             <UiButton class="hidden! sm:flex!" icon="download" label="Download" @click="exportCSV()"/>
@@ -76,50 +71,6 @@ function openFilters() {
       </template>
     </DataTable>
 
-    <!-- Filters -->
-    <Drawer v-model:visible="visible" class="w-[90%]! max-w-xl!" header="Filters" position="right">
-      <div class="flex flex-col gap-6">
-        <!--        <UiInputWithButton-->
-        <!--          v-model="cards.searchTerm"-->
-        <!--          icon="search"-->
-        <!--          label="Search"-->
-        <!--          placeholder="search by card name..."-->
-        <!--        />-->
-        <UiSelect
-          v-model="cards.selectedInks"
-          :options="cards.inkOptions"
-          prefix="Include"
-          allLabel="All inks"
-          multiple
-          placeholder="choose ink..."
-        />
-        <UiSelect
-          v-model="cards.selectedTypes"
-          :options="cards.typeOptions"
-          prefix="Include"
-          allLabel="All types"
-          multiple
-          placeholder="choose type..."
-        />
-        <UiSelect
-          v-model="cards.selectedRarities"
-          :options="cards.rarityOptions"
-          prefix="Include"
-          allLabel="All rarities"
-          multiple
-          placeholder="choose rarity..."
-        />
-        <UiSelect
-          v-model="cards.selectedSets"
-          :options="setOptions"
-          prefix="Include"
-          allLabel="All sets"
-          multiple
-          placeholder="choose set..."
-        />
-        <UiSelect v-model="cards.selectedInkable" prefix="Include" :options="cards.inkableOptions"/>
-        <UiSelect v-model="cards.selectedDualSingleInk" prefix="Include" :options="cards.dualSingleOptions"/>
-      </div>
-    </Drawer>
+    <Filters v-model:visible="showFilters" :filters="cards.filters.value"/>
   </div>
 </template>

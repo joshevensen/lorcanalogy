@@ -1,0 +1,167 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Archetype {
+  Aggro
+  Control
+  Midrange
+}
+
+enum Ink {
+  Amber
+  Amethyst
+  Emerald
+  Ruby
+  Sapphire
+  Steel
+}
+
+enum Layout {
+  Normal
+  Landscape
+}
+
+enum Rarity {
+  Common
+  Uncommon
+  Rare
+  SuperRare
+  Legendary
+  Enchanted
+}
+
+enum Type {
+  Action
+  Song
+  Item
+  Location
+  Character
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String
+  name     String?
+
+  allowTrades Boolean @default(false)
+  country     String?
+  postalCode  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Decks      Deck[]
+  Collection Collection[]
+}
+
+model Collection {
+  master   Boolean @default(false)
+  playset1 Boolean @default(false)
+  playset2 Boolean @default(false)
+  playset3 Boolean @default(false)
+  playset4 Boolean @default(false)
+
+  masterFoil   Boolean @default(false)
+  playset1Foil Boolean @default(false)
+  playset2Foil Boolean @default(false)
+  playset3Foil Boolean @default(false)
+  playset4Foil Boolean @default(false)
+
+  extraQtyPlain Int @default(0)
+  extraQtyFoil  Int @default(0)
+
+  card   Card @relation(fields: [cardId], references: [id])
+  cardId Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@id([userId, cardId])
+}
+
+model Deck {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  ink1        Ink
+  ink2        Ink?
+  archetype   Archetype
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  CardsOnDecks CardsOnDecks[]
+  User         User?          @relation(fields: [userId], references: [id])
+  userId       Int?
+}
+
+model CardsOnDecks {
+  qty Int @default(0)
+
+  card   Card @relation(fields: [cardId], references: [id])
+  cardId Int
+  deck   Deck @relation(fields: [deckId], references: [id])
+  deckId Int
+
+  @@id([cardId, deckId])
+}
+
+model Card {
+  id              Int      @id @default(autoincrement())
+  tcgPlayerId     Int?
+  cardNumber      Int
+  name            String
+  version         String?
+  ink1            Ink
+  ink2            Ink?
+  inkable         Boolean
+  rarity          Rarity
+  type            Type
+  cost            Int
+  lore            Int?
+  strength        Int?
+  willpower       Int?
+  movement        Int?
+  classifications String[]
+  keywords        String[]
+  text            String?
+  image           String?
+  illustrators    String[]
+  layout          Layout
+  isBanned        Boolean? @default(false)
+
+  CardsOnDecks CardsOnDecks[]
+  Collection   Collection[]
+  Franchise    Franchise?     @relation(fields: [franchiseId], references: [id])
+  franchiseId  Int?
+  Set          Set?           @relation(fields: [setId], references: [id])
+  setId        Int?
+}
+
+model Set {
+  id         Int    @id @default(autoincrement())
+  name       String
+  number     Int
+  releasedAt String
+
+  Cards Card[]
+}
+
+model Franchise {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Cards Card[]
+}

@@ -31,9 +31,9 @@ function goToPage(path: string) {
 
     <UiPanel
       class="group cursor-pointer"
-      header="Cards Table"
+      header="Cards"
       titleClasses="group-hover:text-primary-600"
-      @click="goToPage('/card-table')"
+      @click="goToPage('/cards')"
     >
       <p class="text-sm">A filterable table of
         <DisneyLorcana/>

@@ -2,7 +2,7 @@
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
-definePageMeta({title: "Cards Table", layout: 'table'})
+definePageMeta({title: "Cards", layout: 'table'})
 
 const cards = useCards();
 const table = ref();

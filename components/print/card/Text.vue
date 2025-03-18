@@ -11,7 +11,7 @@ const isLandscape = props.card.layout === 'landscape';
 <template>
   <div class="relative">
     <div
-      :class="['space-y-1 text-[6.5pt]', isLandscape && 'text-vertical']"
+      :class="['space-y-1 text-[7pt]', isLandscape && 'text-vertical']"
       v-html="card.text"
     ></div>
 
@@ -20,7 +20,7 @@ const isLandscape = props.card.layout === 'landscape';
         v-for="index in Number(card.lore)"
         :key="index"
         alt="Lore"
-        class="w-[0.125in] transform-[rotate(-90deg)]"
+        :class="['w-[0.125in]', isLandscape && 'transform-[rotate(-90deg)]']"
         src="/icons/card-parts/lore.png"
       />
     </div>

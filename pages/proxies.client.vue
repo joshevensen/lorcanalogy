@@ -17,8 +17,17 @@ function openFilters() {
 <template>
   <PrintWrapper>
     <template #top>
-      <h2 class="text-5xl text-center">Under Construction</h2>
-      <p class="text-3xl text-center">Don't use</p>
+      <div class="max-w-2xl mx-auto">
+        <p class="text-lg text-center">Print
+          <DisneyLorcana/>
+          test cards for informal play testing. Or print a set to represent your master set that you keep in a binder.
+          Or find an interesting use for these proxy cards.
+        </p>
+
+        <p class="mt-6 mb-4 text-xl text-center font-bold">Support the official product and local game stores buy the
+          real
+          cards.</p>
+      </div>
     </template>
 
     <div class="w-[8.5in] mx-auto">

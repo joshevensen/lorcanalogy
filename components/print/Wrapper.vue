@@ -4,7 +4,7 @@ const slots = useSlots();
 
 <template>
   <div class="mb-4 print:hidden">
-    <div v-if="slots.top" class="mt-4 content-width page-padding">
+    <div v-if="slots.top" class="content-width page-padding">
       <slot name="top"/>
     </div>
 

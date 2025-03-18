@@ -10,65 +10,64 @@ const isLandscape = props.card.layout === 'landscape';
 const background = computed(() => {
   const firstInk = props.card.firstInk;
   const secondInk = props.card.secondInk;
-  const baseURL = 'bg-[url(/icons/ink/watermarks/';
   let classes = '';
 
   if (firstInk === 'Amber') {
     if (secondInk) {
-      if (secondInk === 'Amethyst') classes += baseURL + 'amber-amethyst.png)]';
-      if (secondInk === 'Emerald') classes += baseURL + 'amber-emerald.png)]';
-      if (secondInk === 'Ruby') classes += baseURL + 'amber-ruby.png)]';
-      if (secondInk === 'Sapphire') classes += baseURL + 'amber-sapphire.png)]';
-      if (secondInk === 'Steel') classes += baseURL + 'amber-steel.png)]';
+      if (secondInk === 'Amethyst') classes += 'bg-[url(/icons/ink/watermarks/amber-amethyst.png)]';
+      if (secondInk === 'Emerald') classes += 'bg-[url(/icons/ink/watermarks/amber-emerald.png)]';
+      if (secondInk === 'Ruby') classes += 'bg-[url(/icons/ink/watermarks/amber-ruby.png)]';
+      if (secondInk === 'Sapphire') classes += 'bg-[url(/icons/ink/watermarks/amber-sapphire.png)]';
+      if (secondInk === 'Steel') classes += 'bg-[url(/icons/ink/watermarks/amber-steel.png)]';
     } else {
-      classes += baseURL + 'amber.png)]';
+      classes += 'bg-[url(/icons/ink/watermarks/amber.png)]';
     }
   }
 
   if (firstInk === 'Amethyst') {
     if (secondInk) {
-      if (secondInk === 'Emerald') classes += baseURL + 'amethyst-emerald.png)]';
-      if (secondInk === 'Ruby') classes += baseURL + 'amethyst-ruby.png)]';
-      if (secondInk === 'Sapphire') classes += baseURL + 'amethyst-sapphire.png)]';
-      if (secondInk === 'Steel') classes += baseURL + 'amethyst-steel.png)]';
+      if (secondInk === 'Emerald') classes += 'bg-[url(/icons/ink/watermarks/amethyst-emerald.png)]';
+      if (secondInk === 'Ruby') classes += 'bg-[url(/icons/ink/watermarks/amethyst-ruby.png)]';
+      if (secondInk === 'Sapphire') classes += 'bg-[url(/icons/ink/watermarks/amethyst-sapphire.png)]';
+      if (secondInk === 'Steel') classes += 'bg-[url(/icons/ink/watermarks/amethyst-steel.png)]';
 
     } else {
-      classes += baseURL + 'amethyst.png)]';
+      classes += 'bg-[url(/icons/ink/watermarks/amethyst.png)]';
     }
   }
 
   if (firstInk === 'Emerald') {
     if (secondInk) {
-      if (secondInk === 'Ruby') classes += baseURL + 'emerald-ruby.png)]';
-      if (secondInk === 'Sapphire') classes += baseURL + 'emerald-sapphire.png)]';
-      if (secondInk === 'Steel') classes += baseURL + 'emerald-steel.png)]';
+      if (secondInk === 'Ruby') classes += 'bg-[url(/icons/ink/watermarks/emerald-ruby.png)]';
+      if (secondInk === 'Sapphire') classes += 'bg-[url(/icons/ink/watermarks/emerald-sapphire.png)]';
+      if (secondInk === 'Steel') classes += 'bg-[url(/icons/ink/watermarks/emerald-steel.png)]';
 
     } else {
-      classes += baseURL + 'emerald.png)]';
+      classes += 'bg-[url(/icons/ink/watermarks/emerald.png)]';
     }
   }
 
   if (firstInk === 'Ruby') {
     if (secondInk) {
-      if (secondInk === 'Sapphire') classes += baseURL + 'ruby-sapphire.png)]';
-      if (secondInk === 'Steel') classes += baseURL + 'ruby-steel.png)]';
+      if (secondInk === 'Sapphire') classes += 'bg-[url(/icons/ink/watermarks/ruby-sapphire.png)]';
+      if (secondInk === 'Steel') classes += 'bg-[url(/icons/ink/watermarks/ruby-steel.png)]';
 
     } else {
-      classes += baseURL + 'ruby.png)]';
+      classes += 'bg-[url(/icons/ink/watermarks/ruby.png)]';
     }
   }
 
   if (firstInk === 'Sapphire') {
     if (secondInk) {
-      if (secondInk === 'Steel') classes += baseURL + 'sapphire-steel.png)]';
+      if (secondInk === 'Steel') classes += 'bg-[url(/icons/ink/watermarks/sapphire-steel.png)]';
 
     } else {
-      classes += baseURL + 'sapphire.png)]';
+      classes += 'bg-[url(/icons/ink/watermarks/sapphire.png)]';
     }
   }
 
   if (firstInk === 'Steel') {
-    classes += baseURL + 'steel.png)]';
+    classes += 'bg-[url(/icons/ink/watermarks/steel.png)]';
   }
 
   classes += ' bg-center bg-contain bg-no-repeat';
@@ -110,7 +109,7 @@ const background = computed(() => {
       />
       <PrintCardName
         :card="card"
-        :class="['shrink', isLandscape ? 'w-[0.75in]' : 'h-[1.25in] px-[0.1in]']"
+        :class="['shrink', isLandscape ? 'w-[0.75in]' : 'h-[1in] px-[0.1in]']"
       />
       <PrintCardInkBar
         :card="card"

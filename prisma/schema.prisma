@@ -14,40 +14,40 @@ datasource db {
 }
 
 enum Archetype {
-  Aggro
-  Control
-  Midrange
+  aggro
+  control
+  midrange
 }
 
 enum Ink {
-  Amber
-  Amethyst
-  Emerald
-  Ruby
-  Sapphire
-  Steel
+  amber
+  amethyst
+  emerald
+  ruby
+  sapphire
+  steel
 }
 
 enum Layout {
-  Normal
-  Landscape
+  normal
+  landscape
 }
 
 enum Rarity {
-  Common
-  Uncommon
-  Rare
-  SuperRare
-  Legendary
-  Enchanted
+  common
+  uncommon
+  rare
+  superRare
+  legendary
+  enchanted
 }
 
 enum Type {
-  Action
-  Song
-  Item
-  Location
-  Character
+  action
+  actionSong
+  item
+  location
+  character
 }
 
 model User {
@@ -120,8 +120,8 @@ model CardsOnDecks {
 
 model Card {
   id              Int      @id @default(autoincrement())
-  tcgPlayerId     Int?
-  cardNumber      Int
+  tcgPlayerId     Int?     @unique
+  number          String
   name            String
   version         String?
   ink1            Ink
@@ -146,14 +146,15 @@ model Card {
   Collection   Collection[]
   Franchise    Franchise?     @relation(fields: [franchiseId], references: [id])
   franchiseId  Int?
-  Set          Set?           @relation(fields: [setId], references: [id])
-  setId        Int?
+  Set          Set            @relation(fields: [setId], references: [id])
+  setId        Int
+
+  @@unique([setId, number])
 }
 
 model Set {
-  id         Int    @id @default(autoincrement())
-  name       String
-  number     Int
+  id         Int    @id
+  name       String @unique
   releasedAt String
 
   Cards Card[]

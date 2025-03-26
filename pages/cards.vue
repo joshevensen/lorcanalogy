@@ -3,7 +3,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import {useStartCase} from "../.nuxt/imports";
 
-definePageMeta({title: "Cards Table", layout: 'table'})
+definePageMeta({title: "Cards", layout: 'table'})
 
 const cards = await useCards();
 const table = ref();

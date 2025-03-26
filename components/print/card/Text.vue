@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type {MAPPED_CARD} from "~/app.types";
+import type {Card} from "@prisma/client";
 
 const props = defineProps<{
-  card: MAPPED_CARD,
+  card: Card,
 }>()
 
 const isLandscape = props.card.layout === 'landscape';

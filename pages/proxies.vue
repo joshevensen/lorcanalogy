@@ -58,7 +58,7 @@ function openFilters() {
       <Paginator v-model:first="pageIndex" :rows="1" :totalRecords="cards.byPage.value.length"/>
     </div>
 
-    <Filters v-model:visible="showFilters" :filters="cards.filters.value"/>
+    <Filters v-model:visible="showFilters" :filters="cards.filters.value" includeSort/>
 
     <template #printable>
       <LazyPrintPage v-for="(page, index) in cards.byPage.value" :key="index">

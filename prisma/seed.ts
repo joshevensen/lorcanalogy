@@ -14,17 +14,6 @@ import userSeeder from "~/prisma/seeders/user.seeder";
 const prisma = new PrismaClient()
 
 async function main() {
-  // Add me as a user
-  await prisma.user.upsert({
-    where: {email: 'josh@lorcanalogy.com'},
-    update: {},
-    create: {
-      email: 'josh@lorcanalogy.com',
-      password: 'password',
-      name: 'Josh Evensen',
-    },
-  })
-
   for (const set of Sets) {
     await setSeeder(prisma, set);
   }

@@ -1,4 +1,3 @@
-import {inkOptions, setOptions, typeOptions} from "~/app.options";
 import type {Card, Collection} from "@prisma/client";
 
 interface CollectionWithCard extends Collection {
@@ -24,14 +23,16 @@ export default async function useCards() {
     });
   }
 
+  const options = await useOptions();
+
   /**
    * Filters
    */
   const filters = ref({
     sort: 'set',
-    inks: inkOptions.map(option => option.value),
-    types: typeOptions.map(option => option.value),
-    sets: setOptions.map(option => option.value),
+    inks: options.ink.map(option => option.value),
+    types: options.type.map(option => option.value),
+    sets: options.set.map(option => option.value),
   })
 
   /**

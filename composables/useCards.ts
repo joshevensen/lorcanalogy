@@ -1,6 +1,6 @@
-import {dualSingleOptions, inkableOptions, inkOptions, rarityOptions, setOptions, typeOptions} from "~/app.options";
 import type {Card} from "@prisma/client";
 import {Rarity} from "@prisma/client";
+import useOptions from "~/composables/useOptions";
 
 const state = reactive<{
   initialized: boolean;
@@ -21,19 +21,21 @@ export default async function useCards() {
     });
   }
 
+  const options = await useOptions();
+
   /**
    * Filters
    */
   const filters = ref({
     sort: 'set',
-    inks: inkOptions.map(option => option.value),
-    types: typeOptions.map(option => option.value),
-    rarities: rarityOptions.map(option => {
+    inks: options.ink.map(option => option.value),
+    types: options.type.map(option => option.value),
+    rarities: options.rarity.map(option => {
       if (option.value !== Rarity.enchanted) return option.value;
     }).filter(value => value !== undefined),
-    sets: setOptions.map(option => option.value),
-    inkable: inkableOptions.map(option => option.value),
-    dualSingle: dualSingleOptions.map(option => option.value),
+    sets: options.set.map(option => option.value),
+    inkable: options.inkable.map(option => option.value),
+    dualSingle: options.dualSingle.map(option => option.value),
   })
 
   /**

@@ -1,28 +1,23 @@
 <script lang="ts" setup>
-import type {FILTERS} from "~/app.types";
-import {dualSingleOptions, inkableOptions, inkOptions, rarityOptions, setOptions, typeOptions} from "~/app.options";
+import {useStartCase} from "#imports";
 
 definePageMeta({title: 'Collection'})
 
-const {data} = await useFetch('/api/collection')
+const cards = await useCards();
 const showFilters = ref(false);
 
-const allCards = ref(data.value || []);
-
-const filters = ref<FILTERS>({
-  sort: 'set',
-  inks: inkOptions.map(option => option.value),
-  types: typeOptions.map(option => option.value),
-  rarities: rarityOptions.map(option => {
-    if (option.value !== 'Enchanted') return option.value;
-  }).filter(value => value !== undefined),
-  sets: setOptions.map(option => option.value),
-  inkable: inkableOptions.map(option => option.value),
-  dualSingle: dualSingleOptions.map(option => option.value),
-})
-
 const filteredCards = computed(() => {
-  return data.value || [];
+  return cards.filtered.value.map((card) => {
+    return {
+      ...card,
+      fullName: card.name + `${card.version ? ' | ' + card.version : ''}`,
+      inks: useStartCase(card.ink1) + `${card.ink2 ? ', ' + useStartCase(card.ink2) : ''}`,
+      inkable: card.inkable ? 'Yes' : 'No',
+      isDualInk: card.ink2 ? 'Yes' : 'No',
+      type: card.type === 'actionSong' ? 'Song' : useStartCase(card.type),
+      rarity: useStartCase(card.rarity),
+    }
+  })
 })
 
 function openFilters() {
@@ -31,10 +26,10 @@ function openFilters() {
 </script>
 
 <template>
-  <UiList :items="data" class="mt-8">
+  <UiList :items="filteredCards" class="mt-8">
     <template #header>
       <div class="flex items-center justify-between">
-        <p class="italic text-gray-400">{{ filteredCards.length }} of {{ allCards.length }} cards</p>
+        <p class="italic text-gray-400">{{ filteredCards.length }} of {{ cards.all.length }} cards</p>
 
         <div class="flex gap-3 items-center">
           <UiButton class="hidden! sm:flex!" icon="filter" label="Filters" @click="openFilters"/>
@@ -48,5 +43,5 @@ function openFilters() {
     </template>
   </UiList>
 
-  <Filters v-model:visible="showFilters" :filters="filters"/>
+  <Filters v-model:visible="showFilters" :filters="cards.filters"/>
 </template>

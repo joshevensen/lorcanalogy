@@ -14,26 +14,19 @@ const visible = defineModel('visible', {required: true, default: false});
 
 defineProps<{
   filters: FILTERS
+  includeSort?: boolean,
 }>()
-
-
 </script>
 
 <template>
   <Drawer v-model:visible="visible" blockScroll class="w-[90%]! max-w-80!" header="Filters" position="right">
     <div class="flex flex-col gap-8">
       <UiSelect
+        v-if="includeSort"
         v-model="filters.sort"
         :options="sortOptions"
         prefix="Sort by"
       />
-
-      <!--        <UiInputWithButton-->
-      <!--          v-model="searchTerm"-->
-      <!--          icon="search"-->
-      <!--          label="Search"-->
-      <!--          placeholder="search by card name..."-->
-      <!--        />-->
 
       <div class="flex flex-col gap-4">
         <UiCheckboxes v-model="filters.inks" :options="inkOptions" label="Inks"/>

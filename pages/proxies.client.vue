@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({title: "Proxies", layout: 'print'})
 
-const cards = useCards();
+const cards = await useCards();
 const showFilters = ref(false);
 const pageIndex = ref(0);
 

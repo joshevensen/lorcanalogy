@@ -1,14 +1,15 @@
 import {PrismaClient} from '@prisma/client'
 import {Sets} from "~/data/sets";
-import setSeeder from "~/prisma/seeders/set.seeder";
 import {set1Cards} from "~/data/set1";
-import cardSeeder from "~/prisma/seeders/card.seeder";
 import {set2Cards} from "~/data/set2";
 import {set3Cards} from "~/data/set3";
 import {set4Cards} from "~/data/set4";
 import {set5Cards} from "~/data/set5";
 import {set6Cards} from "~/data/set6";
 import {set7Cards} from "~/data/set7";
+import setSeeder from "~/prisma/seeders/set.seeder";
+import cardSeeder from "~/prisma/seeders/card.seeder";
+import userSeeder from "~/prisma/seeders/user.seeder";
 
 const prisma = new PrismaClient()
 
@@ -55,6 +56,12 @@ async function main() {
   for (const card of set7Cards) {
     await cardSeeder(prisma, 7, card)
   }
+
+  await userSeeder(prisma, {
+    email: 'josh@lorcanalogy.com',
+    password: 'password',
+    name: 'Josh Evensen',
+  })
 }
 
 main()

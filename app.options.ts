@@ -1,7 +1,13 @@
-import type {OPTION} from './app.types'
 import useSets from './composables/useSets'
+import convertEnumToOptions from "~/utils/convertEnumToOptions";
+import {Ink, Rarity, Type} from "@prisma/client";
 
-const sets = useSets();
+const sets = await useSets();
+
+export interface OPTION {
+  label: string;
+  value: string | number | null;
+}
 
 export const sortOptions: OPTION[] = [
   {label: 'Name', value: 'name'},
@@ -10,31 +16,11 @@ export const sortOptions: OPTION[] = [
   {label: 'Type', value: 'type'},
 ];
 
-export const inkOptions: OPTION[] = [
-  {label: 'Amber', value: 'Amber'},
-  {label: 'Amethyst', value: 'Amethyst'},
-  {label: 'Emerald', value: 'Emerald'},
-  {label: 'Ruby', value: 'Ruby'},
-  {label: 'Sapphire', value: 'Sapphire'},
-  {label: 'Steel', value: 'Steel'},
-];
+export const inkOptions: OPTION[] = convertEnumToOptions(Ink);
 
-export const typeOptions: OPTION[] = [
-  {label: 'Actions', value: 'Action'},
-  {label: 'Characters', value: 'Character'},
-  {label: 'Items', value: 'Item'},
-  {label: 'Locations', value: 'Location'},
-  {label: 'Songs', value: 'Song'},
-];
+export const typeOptions: OPTION[] = convertEnumToOptions(Type);
 
-export const rarityOptions: OPTION[] = [
-  {label: 'Common', value: 'Common'},
-  {label: 'Uncommon', value: 'Uncommon'},
-  {label: 'Rare', value: 'Rare'},
-  {label: 'Super Rare', value: 'Super_rare'},
-  {label: 'Legendary', value: 'Legendary'},
-  {label: 'Enchanted', value: 'Enchanted'},
-];
+export const rarityOptions: OPTION[] = convertEnumToOptions(Rarity);
 
 export const inkableOptions: OPTION[] = [
   {label: 'Inkable', value: 'inkable'},
@@ -47,5 +33,5 @@ export const dualSingleOptions: OPTION[] = [
 ];
 
 export const setOptions: OPTION[] = sets.all.map(set => {
-  return {label: set.name, value: set.code};
+  return {label: set.name, value: set.id};
 });

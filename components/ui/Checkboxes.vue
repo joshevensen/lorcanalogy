@@ -28,8 +28,8 @@ function unselectAll() {
       </div>
     </div>
 
-    <div class="pl-3">
-      <label v-for="option in options" class="flex gap-2 items-center hover:text-primary cursor-pointer">
+    <div class="pl-1">
+      <label v-for="option in options" class="flex gap-2 py-0.5 items-center hover:text-primary cursor-pointer">
         <Checkbox v-model="model" :value="option.value" size="small"/>
         {{ option.label }}
       </label>

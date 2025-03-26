@@ -1,12 +1,27 @@
 <script lang="ts" setup>
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import {useStartCase} from "../.nuxt/imports";
 
 definePageMeta({title: "Cards Table", layout: 'table'})
 
-const cards = useCards();
+const cards = await useCards();
 const table = ref();
 const showFilters = ref(false);
+
+const filteredCards = computed(() => {
+  return cards.filtered.value.map((card) => {
+    return {
+      ...card,
+      fullName: card.name + `${card.version ? ' | ' + card.version : ''}`,
+      inks: useStartCase(card.ink1) + `${card.ink2 ? ', ' + useStartCase(card.ink2) : ''}`,
+      inkable: card.inkable ? 'Yes' : 'No',
+      isDualInk: card.ink2 ? 'Yes' : 'No',
+      type: card.type === 'actionSong' ? 'Song' : useStartCase(card.type),
+      rarity: useStartCase(card.rarity),
+    }
+  })
+})
 
 function exportCSV() {
   table.value.exportCSV();
@@ -15,7 +30,6 @@ function exportCSV() {
 function openFilters() {
   showFilters.value = true;
 }
-
 </script>
 
 <template>
@@ -23,7 +37,7 @@ function openFilters() {
     <DataTable
       ref="table"
       :rows="42"
-      :value="cards.filtered.value"
+      :value="filteredCards"
       currentPageReportTemplate="{first} to {last}"
       exportFilename="lorcana-cards"
       paginator
@@ -36,7 +50,7 @@ function openFilters() {
     >
       <template #header>
         <div class="flex items-center justify-between">
-          <p class="italic text-gray-400">{{ cards.filtered.value.length }} of {{ cards.all.length }} cards</p>
+          <p class="italic text-gray-400">{{ filteredCards.length }} of {{ cards.all.length }} cards</p>
 
           <div class="flex gap-3 items-center">
             <UiButton class="hidden! sm:flex!" icon="download" label="Download" @click="exportCSV()"/>
@@ -49,15 +63,11 @@ function openFilters() {
       </template>
 
       <Column :sortable="true" class="font-bold min-w-64" field="fullName" header="Name"/>
-      <Column :sortable="true" field="setNumber" header="Set"/>
-      <Column :sortable="true" field="cardNumber" header="Number"/>
+      <Column :sortable="true" field="setId" header="Set"/>
+      <Column :sortable="true" field="number" header="Number"/>
       <Column :sortable="true" field="inks" header="Ink"/>
-      <Column :sortable="true" field="inkable" header="Inkable">
-        <template #body="{data}">{{ data.inkable ? 'Yes' : 'No'}}</template>
-      </Column>
-      <Column :sortable="true" field="isDualInk" header="Dual Ink?">
-        <template #body="{data}">{{ data.isDualInk ? 'Yes' : 'No'}}</template>
-      </Column>
+      <Column :sortable="true" field="inkable" header="Inkable"/>
+      <Column :sortable="true" field="isDualInk" header="Dual Ink?"/>
       <Column :sortable="true" field="type" header="Type"/>
       <Column :sortable="true" field="rarity" header="Rarity"/>
       <Column :sortable="true" field="cost" header="Cost"/>

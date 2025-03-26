@@ -88,7 +88,7 @@ model Collection {
   user   User @relation(fields: [userId], references: [id])
   userId Int
 
-  @@id([userId, cardId])
+  @@id(name: "id", fields: [userId, cardId])
 }
 
 model Deck {
@@ -115,7 +115,7 @@ model CardsOnDecks {
   deck   Deck @relation(fields: [deckId], references: [id])
   deckId Int
 
-  @@id([cardId, deckId])
+  @@id(name: "id", fields: [cardId, deckId])
 }
 
 model Card {

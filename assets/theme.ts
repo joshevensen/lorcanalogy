@@ -16,5 +16,17 @@ export default definePreset(Aura, {
       900: '{orange.900}',
       950: '{orange.950}'
     },
+    formField: {
+      sm: {
+        paddingY: '0.1rem'
+      }
+    }
   },
+  components: {
+    inputnumber: {
+      button: {
+        width: '1.5rem'
+      }
+    }
+  }
 });

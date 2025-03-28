@@ -39,7 +39,9 @@ function openFilters() {
       >
         <template #end>
           <div class="flex items-center gap-2">
-            <p class="mr-2 italic text-gray-500">{{ cards.sorted.value.length }} cards & {{ cards.byPage.value.length }}
+            <p class="mr-2 italic text-gray-500">{{ cards.filtered.value.length }} cards & {{
+                cards.byPage.value.length
+              }}
               pages</p>
             <UiButton class="hidden! sm:flex!" icon="filter" label="Filters" @click="openFilters"/>
             <UiButton :outlined="false" label="Print Cards" @click="printCards"/>

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import {useStartCase} from "#imports";
-
 definePageMeta({title: 'Collection'})
 
 const cards = await useCards();
@@ -10,11 +8,8 @@ const filteredCards = computed(() => {
   return cards.filtered.value.map((card) => {
     return {
       ...card,
-      fullName: card.name + `${card.version ? ' | ' + card.version : ''}`,
       inks: useStartCase(card.ink1) + `${card.ink2 ? ', ' + useStartCase(card.ink2) : ''}`,
-      inkable: card.inkable ? 'Yes' : 'No',
-      isDualInk: card.ink2 ? 'Yes' : 'No',
-      type: card.type === 'actionSong' ? 'Song' : useStartCase(card.type),
+      type: useStartCase(card.type),
       rarity: useStartCase(card.rarity),
     }
   })
@@ -26,7 +21,7 @@ function openFilters() {
 </script>
 
 <template>
-  <UiList :items="filteredCards" class="mt-8">
+  <UiList :items="filteredCards" class="max-w-xl mt-8 mx-auto">
     <template #header>
       <div class="flex items-center justify-between">
         <p class="italic text-gray-400">{{ filteredCards.length }} of {{ cards.all.length }} cards</p>
@@ -38,8 +33,8 @@ function openFilters() {
       </div>
     </template>
 
-    <template #listItem="{ item: collection }">
-      <p>{{ collection.card.name }}</p>
+    <template #listItem="{ item: card }">
+      <CollectionItem :card="card"/>
     </template>
   </UiList>
 

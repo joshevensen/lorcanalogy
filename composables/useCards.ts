@@ -39,10 +39,28 @@ export default async function useCards() {
   })
 
   /**
+   * Sorted Cards
+   */
+  const sortedCards = computed((): Card[] => {
+    switch (filters.value.sort) {
+      case 'set':
+        return useSortBy(state.cards, ['setNumber']);
+      case 'name':
+        return useSortBy(state.cards, ['fullName']);
+      case 'rarity':
+        return useSortBy(state.cards, ['rarity', 'fullName']);
+      case 'type':
+        return useSortBy(state.cards, ['type', 'rarity', 'fullName']);
+      default:
+        return state.cards;
+    }
+  })
+
+  /**
    * Filtered Cards
    */
   const filtered = computed((): Card[] => {
-    return state.cards.filter(card => {
+    return sortedCards.value.filter(card => {
       // Ink
       if (!filters.value.inks.includes(card.ink1) && !filters.value.inks.includes(card.ink2)) return false;
 
@@ -81,30 +99,14 @@ export default async function useCards() {
   })
 
   /**
-   * Sorted Cards
-   */
-  const sorted = computed((): Card[] => {
-    switch (filters.value.sort) {
-      case 'name':
-        return useSortBy(filtered.value, ['fullName']);
-      case 'rarity':
-        return useSortBy(filtered.value, ['rarity', 'fullName']);
-      case 'type':
-        return useSortBy(filtered.value, ['type', 'fullName']);
-    }
-
-    return filtered.value;
-  })
-
-  /**
    * Cards by Pages
    */
   const byPage = computed(() => {
     const pages = [];
     const chunkSize = 9; // cards per page
 
-    for (let i = 0; i < sorted.value.length; i += chunkSize) {
-      const chunk: Card[] = sorted.value.slice(i, i + chunkSize);
+    for (let i = 0; i < filtered.value.length; i += chunkSize) {
+      const chunk: Card[] = filtered.value.slice(i, i + chunkSize);
       pages.push(chunk);
     }
 
@@ -112,10 +114,9 @@ export default async function useCards() {
   })
 
   return {
+    filters,
     all: state.cards,
     filtered,
-    sorted,
     byPage,
-    filters
   }
 }

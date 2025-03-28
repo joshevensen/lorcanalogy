@@ -44,7 +44,7 @@ enum Rarity {
 
 enum Type {
   action
-  actionSong
+  song
   item
   location
   character
@@ -68,20 +68,10 @@ model User {
 }
 
 model Collection {
-  master   Boolean @default(false)
-  playset1 Boolean @default(false)
-  playset2 Boolean @default(false)
-  playset3 Boolean @default(false)
-  playset4 Boolean @default(false)
+  plain Int @default(0)
+  foil  Int @default(0)
 
-  masterFoil   Boolean @default(false)
-  playset1Foil Boolean @default(false)
-  playset2Foil Boolean @default(false)
-  playset3Foil Boolean @default(false)
-  playset4Foil Boolean @default(false)
-
-  extraQtyPlain Int @default(0)
-  extraQtyFoil  Int @default(0)
+  notes String?
 
   card   Card @relation(fields: [cardId], references: [id])
   cardId Int
@@ -120,10 +110,12 @@ model CardsOnDecks {
 
 model Card {
   id              Int      @id @default(autoincrement())
+  setNumber       Int
   tcgPlayerId     Int?     @unique
   number          String
   name            String
   version         String?
+  fullName        String
   ink1            Ink
   ink2            Ink?
   inkable         Boolean

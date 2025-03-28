@@ -1,37 +1,13 @@
 <script lang="ts" setup="">
-import type {MenuItem} from "primevue/menuitem";
-
-const {data: articles} = await useAsyncData('navArticles', () => {
-  return queryCollectionNavigation('articles')
-})
-
-const menuItems = computed<MenuItem[]>(() => {
-  const items: MenuItem[] = [{label: 'Home', to: '/'}];
-
-  if (articles.value) {
-    const articleChildren = articles.value[0].children || []
-    const articleItems: MenuItem[] = []
-
-    articleChildren.forEach((item) => {
-      articleItems.push({label: item.title, to: item.path})
-    })
-
-    items.push({
-      items: articleItems
-    })
-  }
-
-  items.push({
-    items: [
-      {label: 'Cards', to: '/cards'},
-      {label: 'Proxies', to: '/proxies'},
-      {label: 'Resources', to: '/resources'},
-      {label: 'Glossary', to: '/glossary'}
-    ]
-  })
-
-  return items;
-});
+const menuItems = [
+  {label: 'Home', to: '/'},
+  {label: 'Articles', to: '/articles'},
+  {label: 'Cards', to: '/cards'},
+  {label: 'Collection', to: '/collection'},
+  {label: 'Proxies', to: '/proxies'},
+  {label: 'Resources', to: '/resources'},
+  {label: 'Glossary', to: '/glossary'}
+]
 
 const menu = ref();
 const toggle = (event: any) => {
@@ -58,9 +34,8 @@ const toggle = (event: any) => {
 
     <!--  Page Menu-->
     <Menu
-      v-if="menuItems"
-      id="overlay_menu"
       ref="menu"
+      id="overlay_menu"
       :model="menuItems"
       :popup="true"
       pt:root:class="bg-lorcana-parchment-0!"

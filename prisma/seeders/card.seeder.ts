@@ -4,18 +4,32 @@ import type {CARD} from "~/data/data.types";
 import {camelCase} from "lodash-es";
 
 export default function (prisma: PrismaClient, setId: number, dataCard: CARD) {
-  const rarity = camelCase(dataCard.rarity);
-  const type = camelCase(dataCard.type.join(''));
-  const layout = camelCase(dataCard.layout);
+  const removeLetters = parseInt(dataCard.collector_number);
+  const backToString = String(removeLetters);
+  const cardNumberWithZeros = backToString.padStart(3, '0');
+  const setNumber = parseInt(String(setId) + cardNumberWithZeros)
+
+  let fullName = dataCard.name;
+  if (dataCard.version) fullName += `, ${dataCard.version}`;
+
   const ink1 = dataCard.inks?.length ? camelCase(dataCard.inks[0]) : camelCase(String(dataCard.ink));
   const ink2 = dataCard.inks && (dataCard.inks[1] ? camelCase(dataCard.inks[1]) : null);
 
+  const rarity = camelCase(dataCard.rarity);
+
+  const typeString = camelCase(dataCard.type.join(''));
+  const type = typeString === 'actionSong' ? 'song' : typeString;
+
+  const layout = camelCase(dataCard.layout);
+
   const card: Omit<Card, 'id' | 'franchiseId'> = {
     setId: setId,
+    setNumber,
     tcgPlayerId: dataCard.tcgplayer_id || null,
     number: dataCard.collector_number,
     name: dataCard.name,
     version: dataCard.version || null,
+    fullName,
     ink1: Ink[ink1 as keyof typeof Ink],
     ink2: ink2 ? Ink[ink2 as keyof typeof Ink] : null,
     inkable: dataCard.inkwell,

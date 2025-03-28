@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import type {FILTERS} from "~/app.types";
-
 const visible = defineModel('visible', {required: true, default: false});
 
-defineProps<{
-  filters: FILTERS
+const props = defineProps<{
+  filters: any
   includeSort?: boolean,
 }>()
 

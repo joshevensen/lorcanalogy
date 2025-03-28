@@ -13,11 +13,10 @@ const filteredCards = computed(() => {
   return cards.filtered.value.map((card) => {
     return {
       ...card,
-      fullName: card.name + `${card.version ? ' | ' + card.version : ''}`,
       inks: useStartCase(card.ink1) + `${card.ink2 ? ', ' + useStartCase(card.ink2) : ''}`,
       inkable: card.inkable ? 'Yes' : 'No',
       isDualInk: card.ink2 ? 'Yes' : 'No',
-      type: card.type === 'actionSong' ? 'Song' : useStartCase(card.type),
+      type: useStartCase(card.type),
       rarity: useStartCase(card.rarity),
     }
   })

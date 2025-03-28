@@ -12,68 +12,39 @@ const state = reactive<{
   collection: []
 })
 
-export default async function useCards() {
-  /**
-   * Get Cards
-   */
+export default async function useCollection() {
   if (!state.initialized) {
+    await getItems();
+  }
+
+  async function getItems() {
+    state.initialized = false;
     await $fetch('/api/collection').then(response => {
       state.collection = response;
       state.initialized = true;
     });
   }
 
-  const options = await useOptions();
+  function findItemByCardId(cardId: number) {
+    return state.collection.find((collection) => collection.card.id === cardId);
+  }
 
-  /**
-   * Filters
-   */
-  const filters = ref({
-    sort: 'set',
-    inks: options.ink.map(option => option.value),
-    types: options.type.map(option => option.value),
-    sets: options.set.map(option => option.value),
-  })
-
-  /**
-   * Filtered Cards
-   */
-  const filtered = computed((): CollectionWithCard[] => {
-    return state.collection.filter(item => {
-      // Ink
-      if (!filters.value.inks.includes(item.card.ink1) && !filters.value.inks.includes(item.card.ink2)) return false;
-
-      // Type
-      if (!filters.value.types.includes(item.card.type)) return false;
-
-      // Set
-      if (!filters.value.sets.includes(item.card.setId)) return false;
-
-      return true;
+  async function updateItem(cardId: number, plain: number, foil: number, notes: string | null) {
+    await $fetch('/api/collection', {
+      method: 'POST',
+      body: {
+        cardId: cardId,
+        plain: plain,
+        foil: foil,
+        notes: notes,
+      }
     })
-  })
 
-  /**
-   * Sorted Cards
-   */
-  const sorted = computed((): CollectionWithCard[] => {
-    switch (filters.value.sort) {
-      case 'name':
-        return useSortBy(filtered.value, ['fullName']);
-      case 'rarity':
-        return useSortBy(filtered.value, ['rarity', 'fullName']);
-      case 'type':
-        return useSortBy(filtered.value, ['type', 'fullName']);
-    }
-
-    return filtered.value;
-  })
+    await getItems();
+  }
 
   return {
-
-    filters,
-    all: state.collection,
-    filtered,
-    sorted,
+    findItemByCardId,
+    updateItem,
   }
 }

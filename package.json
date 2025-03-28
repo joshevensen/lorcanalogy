@@ -8,6 +8,7 @@
     "dbStudio": "prisma studio",
     "dbMigrate": "prisma migrate dev",
     "dbReset": "prisma migrate reset --force",
+    "dbClear": "prisma migrate reset --skip-seed --force",
     "dbSeed": "prisma db seed",
     "build": "nuxt build",
     "generate": "nuxt generate",

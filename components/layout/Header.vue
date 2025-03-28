@@ -1,18 +1,40 @@
 <script lang="ts" setup="">
-const menuItems = [
-  {label: 'Home', to: '/'},
-  {label: 'Articles', to: '/articles'},
-  {label: 'Cards', to: '/cards'},
-  {label: 'Collection', to: '/collection'},
-  {label: 'Proxies', to: '/proxies'},
-  {label: 'Resources', to: '/resources'},
-  {label: 'Glossary', to: '/glossary'}
-]
+import type {MenuItem} from "primevue/menuitem";
+
+const supabase = useSupabaseClient()
+const router = useRouter();
+const user = useSupabaseUser();
+
+const menuItems = computed(() => {
+  const items: MenuItem[] = [
+    {label: 'Home', to: '/'},
+    {label: 'Articles', to: '/articles'},
+    {label: 'Cards', to: '/cards'},
+    {label: 'Proxies', to: '/proxies'},
+    {label: 'Resources', to: '/resources'},
+    {label: 'Glossary', to: '/glossary'},
+  ]
+
+  if (user.value) {
+    items.push({
+      items: [
+        {label: 'Collection', to: '/collection'},
+      ]
+    })
+  }
+
+  return items;
+})
 
 const menu = ref();
 const toggle = (event: any) => {
   menu.value.toggle(event);
 };
+
+async function logout() {
+  await supabase.auth.signOut()
+  router.push('/')
+}
 </script>
 
 <template>
@@ -23,19 +45,23 @@ const toggle = (event: any) => {
         <Lorcanaology/>
       </NuxtLink>
 
-      <Button
-        aria-controls="overlay_menu"
-        aria-haspopup="true"
-        icon="pi pi-bars"
-        variant="text"
-        @click="toggle"
-      />
+      <div class="flex items-center gap-1">
+        <UiButton v-if="user" label="logout" text @click="logout"/>
+
+        <Button
+          aria-controls="overlay_menu"
+          aria-haspopup="true"
+          icon="pi pi-bars"
+          variant="text"
+          @click="toggle"
+        />
+      </div>
     </div>
 
     <!--  Page Menu-->
     <Menu
-      ref="menu"
       id="overlay_menu"
+      ref="menu"
       :model="menuItems"
       :popup="true"
       pt:root:class="bg-lorcana-parchment-0!"

@@ -23,7 +23,9 @@
     "@nuxt/fonts": "^0.10.3",
     "@nuxt/image": "^1.9.0",
     "@nuxthub/core": "^0.8.17",
+    "@nuxtjs/supabase": "^1.5.0",
     "@primeuix/themes": "^1.0.0",
+    "@primevue/forms": "^4.3.3",
     "@prisma/client": "^6.5.0",
     "@tailwindcss/vite": "^4.0.9",
     "axios": "^1.8.2",
@@ -42,5 +44,8 @@
     "nuxt-lodash": "^2.5.3",
     "prisma": "^6.5.0",
     "wrangler": "^3.111.0"
+  },
+  "overrides": {
+    "cookie": "1.0.2"
   }
 }

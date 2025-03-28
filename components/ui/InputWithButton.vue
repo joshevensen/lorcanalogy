@@ -5,7 +5,7 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 
 const emits = defineEmits('click')
 
-const model = defineModel()
+const model = defineModel<string>()
 
 defineProps<{
   icon: string;

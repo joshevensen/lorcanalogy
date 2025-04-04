@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import type {OPTION} from '~/app.types'
+import type {OPTION} from '~/app.types';
 
 const props = defineProps<{
   label: string;
+  description?: string;
   options: OPTION[];
 }>()
 
@@ -27,6 +28,8 @@ function unselectAll() {
         <button class="text-xs hover:text-primary cursor-pointer" @click="unselectAll">unselect all</button>
       </div>
     </div>
+
+    <p v-if="description" class="text-xs mb-2">{{ description }}</p>
 
     <div class="pl-1">
       <label v-for="option in options" class="flex gap-2 py-0.5 items-center hover:text-primary cursor-pointer">

@@ -1,6 +1,7 @@
 import type {Card} from "@prisma/client";
 import {Rarity} from "@prisma/client";
 import useOptions from "~/composables/useOptions";
+import type {OPTION} from "~/app.types";
 
 const state = reactive<{
   initialized: boolean;
@@ -30,6 +31,8 @@ export default async function useCards() {
     sort: 'set',
     inks: options.ink.map(option => option.value),
     types: options.type.map(option => option.value),
+    keywords: [],
+    classifications: [],
     rarities: options.rarity.map(option => {
       if (option.value !== Rarity.enchanted) return option.value;
     }).filter(value => value !== undefined),
@@ -56,6 +59,13 @@ export default async function useCards() {
     }
   })
 
+  function haveCommonElements(array1: any[], array2: any[]) {
+    array1 = array1.map(element => useKebabCase(element));
+    array2 = array2.map(element => useKebabCase(element));
+
+    return array1.some(element => array2.includes(element));
+  }
+
   /**
    * Filtered Cards
    */
@@ -63,6 +73,16 @@ export default async function useCards() {
     return sortedCards.value.filter(card => {
       // Ink
       if (!filters.value.inks.includes(card.ink1) && !filters.value.inks.includes(card.ink2)) return false;
+
+      // Keyword
+      if (filters.value.keywords.length > 0) {
+        if (!haveCommonElements(filters.value.keywords, card.keywords)) return false;
+      }
+
+      // Classification
+      if (filters.value.classifications.length > 0) {
+        if (!haveCommonElements(filters.value.classifications, card.classifications)) return false;
+      }
 
       // Type
       if (!filters.value.types.includes(card.type)) return false;
@@ -113,10 +133,40 @@ export default async function useCards() {
     return pages
   })
 
+  const keywordsList = computed<OPTION[]>(() => {
+    let items: string[] = []
+
+    state.cards.forEach(card => {
+      card.keywords.forEach(keyword => {
+        items.push(keyword)
+      })
+    })
+
+    return useUniq(items).sort().map((item) => {
+      return {label: useStartCase(item), value: useKebabCase(item)}
+    });
+  })
+
+  const classificationsList = computed<OPTION[]>(() => {
+    let items: string[] = []
+
+    state.cards.forEach(card => {
+      card.classifications.forEach(classification => {
+        items.push(classification)
+      })
+    })
+
+    return useUniq(items).sort().map((item) => {
+      return {label: useStartCase(item), value: useKebabCase(item)}
+    });
+  })
+
   return {
     filters,
     all: state.cards,
     filtered,
     byPage,
+    keywordsList,
+    classificationsList,
   }
 }

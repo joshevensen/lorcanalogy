@@ -21,6 +21,6 @@ export default async function useSets() {
   }
 
   return {
-    all: state.sets,
+    all: useSortBy(state.sets, ['id']),
   }
 }

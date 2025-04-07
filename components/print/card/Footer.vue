@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import type {MAPPED_CARD} from "~/app.types";
+import type {Card} from "@prisma/client";
+import {useStartCase} from "../../../.nuxt/imports";
 
 const props = defineProps<{
-  card: MAPPED_CARD,
+  card: Card,
 }>()
 
 const isLandscape = props.card.layout === 'landscape';
@@ -11,7 +12,7 @@ const isLandscape = props.card.layout === 'landscape';
 <template>
   <div :class="['flex justify-between items-center', isLandscape && 'flex-col-reverse']">
     <p :class="['flex items-center gap-1 text-[7pt] text-gray-600', isLandscape && 'text-vertical']">
-      {{ card.id }} - {{ card.rarity }}
+      {{ card.setId }}-{{ card.id }} &middot; {{ useStartCase(card.rarity) }}
     </p>
     <p :class="['text-[6pt] text-gray-600', isLandscape && 'text-vertical']">
       For personal use only

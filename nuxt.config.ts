@@ -8,13 +8,19 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxt/fonts',
     '@nuxt/image',
+    '@primevue/nuxt-module',
+    '@nuxtjs/supabase',
     'nuxt-lodash',
     '@nuxthub/core',
-    '@primevue/nuxt-module',
   ],
   css: ['~/assets/main.css'],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        ".prisma/client/index-browser": "./node_modules/.prisma/client/index-browser.js"
+      }
+    }
   },
   content: {
     preview: {
@@ -29,6 +35,15 @@ export default defineNuxtConfig({
           darkModeSelector: false,
         }
       }
+    }
+  },
+  supabase: {
+    redirectOptions: {
+      login: '/login',
+      callback: '/confirm',
+      include: ['/collection'],
+      exclude: ['/'],
+      saveRedirectToCookie: true,
     }
   }
 })

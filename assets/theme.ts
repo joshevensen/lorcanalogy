@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {definePreset} from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 
@@ -16,5 +17,29 @@ export default definePreset(Aura, {
       900: '{orange.900}',
       950: '{orange.950}'
     },
+    formField: {
+      sm: {
+        paddingY: '0.1rem'
+      }
+    },
   },
+  components: {
+    inputnumber: {
+      button: {
+        width: '1.5rem'
+      }
+    },
+    stepper: {
+      steppanels: {
+        padding: '0',
+      },
+      steppanel: {
+        colorScheme: {
+          light: {
+            background: 'transparent',
+          }
+        }
+      }
+    }
+  }
 });

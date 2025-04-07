@@ -34,7 +34,7 @@ withDefaults(defineProps<{
       option-label="label"
       option-value="value"
       pt:root:class="flex!"
-      size="small"
+      filter
     />
 
     <Select
@@ -46,7 +46,6 @@ withDefaults(defineProps<{
       option-label="label"
       option-value="value"
       pt:root:class="flex!"
-      size="small"
     />
   </InputGroup>
 </template>

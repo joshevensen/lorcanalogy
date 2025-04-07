@@ -1,42 +1,40 @@
 <script lang="ts" setup="">
 import type {MenuItem} from "primevue/menuitem";
 
-const {data: articles} = await useAsyncData('navArticles', () => {
-  return queryCollectionNavigation('articles')
-})
+const supabase = useSupabaseClient()
+const router = useRouter();
+const user = useSupabaseUser();
 
-const menuItems = computed<MenuItem[]>(() => {
-  const items: MenuItem[] = [{label: 'Home', to: '/'}];
+const menuItems = computed(() => {
+  const items: MenuItem[] = [
+    {label: 'Home', to: '/'},
+    {label: 'Articles', to: '/articles'},
+    {label: 'Cards', to: '/cards'},
+    {label: 'Proxies', to: '/proxies'},
+    {label: 'Resources', to: '/resources'},
+    {label: 'Glossary', to: '/glossary'},
+  ]
 
-  if (articles.value) {
-    const articleChildren = articles.value[0].children || []
-    const articleItems: MenuItem[] = []
-
-    articleChildren.forEach((item) => {
-      articleItems.push({label: item.title, to: item.path})
-    })
-
+  if (user.value) {
     items.push({
-      items: articleItems
+      items: [
+        {label: 'Collection', to: '/collection'},
+      ]
     })
   }
 
-  items.push({
-    items: [
-      {label: 'Cards', to: '/cards'},
-      {label: 'Proxies', to: '/proxies'},
-      {label: 'Resources', to: '/resources'},
-      {label: 'Glossary', to: '/glossary'}
-    ]
-  })
-
   return items;
-});
+})
 
 const menu = ref();
 const toggle = (event: any) => {
   menu.value.toggle(event);
 };
+
+async function logout() {
+  await supabase.auth.signOut()
+  router.push('/')
+}
 </script>
 
 <template>
@@ -47,18 +45,21 @@ const toggle = (event: any) => {
         <Lorcanaology/>
       </NuxtLink>
 
-      <Button
-        aria-controls="overlay_menu"
-        aria-haspopup="true"
-        icon="pi pi-bars"
-        variant="text"
-        @click="toggle"
-      />
+      <div class="flex items-center gap-1">
+        <UiButton v-if="user" label="logout" text @click="logout"/>
+
+        <Button
+          aria-controls="overlay_menu"
+          aria-haspopup="true"
+          icon="pi pi-bars"
+          variant="text"
+          @click="toggle"
+        />
+      </div>
     </div>
 
     <!--  Page Menu-->
     <Menu
-      v-if="menuItems"
       id="overlay_menu"
       ref="menu"
       :model="menuItems"

@@ -74,7 +74,7 @@ function goToPage(path: string) {
       titleClasses="group-hover:text-primary-600"
       @click="goToPage('/glossary')"
     >
-      <p class="text-sm">Here a list of terms found in
+      <p class="text-sm">Here is a list of terms found in
         <DisneyLorcana/>
         and their definition.
       </p>

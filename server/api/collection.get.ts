@@ -6,5 +6,10 @@ export default defineEventHandler(async (event) => {
   return prisma.collection.findMany({
     where: {userId: 1},
     include: {card: true},
+    orderBy: {
+      card: {
+        setNumber: 'asc'
+      }
+    }
   });
 })

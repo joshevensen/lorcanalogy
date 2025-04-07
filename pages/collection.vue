@@ -1,42 +1,35 @@
 <script lang="ts" setup>
 definePageMeta({title: 'Collection'})
 
-const cards = await useCards();
-const showFilters = ref(false);
+const visible = ref(false);
+const collection = await useCollection();
 
-const filteredCards = computed(() => {
-  return cards.filtered.value.map((card) => {
-    return {
-      ...card,
-      inks: useStartCase(card.ink1) + `${card.ink2 ? ', ' + useStartCase(card.ink2) : ''}`,
-      type: useStartCase(card.type),
-      rarity: useStartCase(card.rarity),
-    }
-  })
-})
-
-function openFilters() {
-  showFilters.value = true;
-}
 </script>
 
 <template>
-  <UiList :items="filteredCards" class="max-w-xl mt-8 mx-auto">
-    <template #header>
-      <div class="flex items-center justify-between">
-        <p class="italic text-gray-400">{{ filteredCards.length }} of {{ cards.all.length }} cards</p>
+  <div class="flex gap-10 mt-8 max-w-7xl mx-auto">
+    <div class="hidden md:flex flex-col gap-8 basis-56 max-w-56">
+      <CollectionFilters :filters="collection.filters.value"/>
+    </div>
 
-        <div class="flex gap-3 items-center">
-          <UiButton class="hidden! sm:flex!" icon="filter" label="Filters" @click="openFilters"/>
-          <UiButtonIcon class="sm:hidden!" icon="filter" @click="openFilters"/>
+    <UiList v-if="!collection.loading" :items="collection.filtered.value" class="grow">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <p class="italic text-gray-400">{{ collection.filtered.value.length }} of {{ collection.all.length }}
+            cards</p>
+          <UiButton class="md:hidden!" icon="filter" label="Filters" @click="visible = true"/>
         </div>
-      </div>
-    </template>
+      </template>
 
-    <template #listItem="{ item: card }">
-      <CollectionItem :card="card"/>
-    </template>
-  </UiList>
+      <template #listItem="{ item }">
+        <CollectionItem :item="item"/>
+      </template>
+    </UiList>
+  </div>
 
-  <Filters v-model:visible="showFilters" :filters="cards.filters"/>
+  <UiDrawer v-model:visible="visible" header="Filters" position="right">
+    <div class="flex flex-col gap-8">
+      <CollectionFilters :filters="collection.filters.value"/>
+    </div>
+  </UiDrawer>
 </template>

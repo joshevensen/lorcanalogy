@@ -5,11 +5,14 @@ withDefaults(defineProps<{
   label: string;
   outlined?: boolean;
   icon?: string;
+  fluid?: boolean;
+  size?: 'small' | 'large' | 'medium'
 }>(), {
   outlined: true,
+  size: 'small'
 })
 </script>
 
 <template>
-  <Button :icon="icon ? `pi pi-${icon}` : undefined" :label :outlined size="small"/>
+  <Button :fluid :icon="icon ? `pi pi-${icon}` : undefined" :label :outlined :size/>
 </template>

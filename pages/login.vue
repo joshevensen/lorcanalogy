@@ -16,10 +16,15 @@ const signIn = async () => {
 </script>
 
 <template>
-  <div>
-    <UiInput v-model="email" placeholder="Email" type="email"/>
-    <UiInput v-model="password" placeholder="Password" type="password"/>
+  <div class="mt-10 w-lg mx-auto flex flex-col gap-2">
+    <UiField label="Email">
+      <UiInput v-model="email" type="email"/>
+    </UiField>
 
-    <UiButton color="primary" label="Login" @click="signIn"/>
+    <UiField label="Password">
+      <UiInput v-model="password" type="password"/>
+    </UiField>
+
+    <UiButton :outlined="false" class="mt-6" color="primary" label="Login" size="medium" @click="signIn"/>
   </div>
 </template>

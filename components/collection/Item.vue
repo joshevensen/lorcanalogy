@@ -4,12 +4,12 @@ import {Ink} from "@prisma/client";
 const collection = await useCollection();
 
 const props = defineProps<{
-  card: any
+  item: any
 }>()
 
 const background = computed(() => {
-  const firstInk = props.card.ink1;
-  const secondInk = props.card.ink2;
+  const firstInk = props.item.card.ink1;
+  const secondInk = props.item.card.ink2;
   let classes = '';
 
   if (firstInk === Ink.amber) {
@@ -73,14 +73,14 @@ const background = computed(() => {
   return classes
 })
 
-const plainCount = ref(props.card.Collection.length ? props.card.Collection[0].plain : 0)
-const foilCount = ref(props.card.Collection.length ? props.card.Collection[0].foil : 0)
+const plainCount = ref(props.item.plain ? props.item.plain : 0)
+const foilCount = ref(props.item.foil ? props.item.foil : 0)
 
 watch(plainCount, (newValue) => {
-  collection.updateItem(props.card.id, newValue, foilCount.value, null)
+  collection.updateItem(props.item.card.id, newValue, foilCount.value, null)
 })
 watch(foilCount, (newValue) => {
-  collection.updateItem(props.card.id, plainCount.value, newValue, null)
+  collection.updateItem(props.item.card.id, plainCount.value, newValue, null)
 })
 </script>
 
@@ -90,14 +90,14 @@ watch(foilCount, (newValue) => {
 
     <div class="grow flex items-center justify-between sm:pl-20">
       <div class="grow">
-        <p class="text-xs mb-1 italic text-slate-500">{{ card.type }} &middot; Set {{ card.setId }} &middot;
-          <small>#</small>{{ card.number }}</p>
+        <p class="text-xs mb-1 italic text-slate-500">{{ item.card.type }} &middot; Set {{ item.card.setId }} &middot;
+          <small>#</small>{{ item.card.number }}</p>
         <div class="sm:flex sm:items-baseline sm:gap-1">
-          <p class="text-lg leading-none font-bold">{{ card.name }}<span
-            v-if="card.version"
+          <p class="text-lg leading-none font-bold">{{ item.card.name }}<span
+            v-if="item.card.version"
             class="hidden sm:inline"
           >,</span></p>
-          <p class="text-xs md:text-sm leading-none">{{ card.version }}</p>
+          <p class="text-xs md:text-sm leading-none">{{ item.card.version }}</p>
         </div>
       </div>
 

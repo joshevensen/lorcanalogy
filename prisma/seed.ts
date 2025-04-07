@@ -10,6 +10,7 @@ import {set7Cards} from "~/data/set7";
 import setSeeder from "~/prisma/seeders/set.seeder";
 import cardSeeder from "~/prisma/seeders/card.seeder";
 import userSeeder from "~/prisma/seeders/user.seeder";
+import collectionSeeder from "~/prisma/seeders/collection.seeder";
 
 const prisma = new PrismaClient()
 
@@ -46,11 +47,12 @@ async function main() {
     await cardSeeder(prisma, 7, card)
   }
 
-  await userSeeder(prisma, {
-    email: 'josh@lorcanalogy.com',
-    password: 'password',
+  const user = await userSeeder(prisma, {
+    authId: 'd01f1b15-1a7c-4e8f-bade-55485d917311',
     name: 'Josh Evensen',
   })
+
+  await collectionSeeder(prisma, user.id);
 }
 
 main()

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {definePreset} from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 
@@ -20,12 +21,24 @@ export default definePreset(Aura, {
       sm: {
         paddingY: '0.1rem'
       }
-    }
+    },
   },
   components: {
     inputnumber: {
       button: {
         width: '1.5rem'
+      }
+    },
+    stepper: {
+      steppanels: {
+        padding: '0',
+      },
+      steppanel: {
+        colorScheme: {
+          light: {
+            background: 'transparent',
+          }
+        }
       }
     }
   }

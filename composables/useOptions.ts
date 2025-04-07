@@ -6,10 +6,9 @@ export default async function useOptions() {
   // const cards = await useCards();
 
   const sort: OPTION[] = [
-    {label: 'Name', value: 'name'},
-    {label: 'Rarity', value: 'rarity'},
     {label: 'Set', value: 'set'},
-    {label: 'Type', value: 'type'},
+    {label: 'Name', value: 'name'},
+    {label: 'Ink-Type-Name', value: 'inkTypeName'},
   ];
 
   const ink: OPTION[] = convertEnumToOptions(Ink);

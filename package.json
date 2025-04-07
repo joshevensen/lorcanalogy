@@ -3,18 +3,30 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
     "dev": "nuxt dev",
+    "dbGenerate": "prisma generate",
+    "dbStudio": "prisma studio",
+    "dbMigrate": "prisma migrate dev",
+    "dbReset": "prisma migrate reset --force",
+    "dbClear": "prisma migrate reset --skip-seed --force",
+    "dbSeed": "prisma db seed",
+    "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@nuxt/content": "^3.2.2",
     "@nuxt/fonts": "^0.10.3",
     "@nuxt/image": "^1.9.0",
     "@nuxthub/core": "^0.8.17",
+    "@nuxtjs/supabase": "^1.5.0",
     "@primeuix/themes": "^1.0.0",
+    "@primevue/forms": "^4.3.3",
+    "@prisma/client": "^6.5.0",
     "@tailwindcss/vite": "^4.0.9",
     "axios": "^1.8.2",
     "chart.js": "^4.4.8",
@@ -23,12 +35,17 @@
     "primevue": "^4.3.1",
     "tailwindcss": "^4.0.9",
     "tailwindcss-primeui": "^0.5.1",
+    "tsx": "^4.19.3",
     "vue": "latest",
     "vue-router": "latest"
   },
   "devDependencies": {
     "@primevue/nuxt-module": "^4.3.1",
     "nuxt-lodash": "^2.5.3",
+    "prisma": "^6.5.0",
     "wrangler": "^3.111.0"
+  },
+  "overrides": {
+    "cookie": "1.0.2"
   }
 }

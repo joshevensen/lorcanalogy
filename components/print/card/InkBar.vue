@@ -1,34 +1,35 @@
 <script lang="ts" setup>
-import type {MAPPED_CARD} from "~/app.types";
+import {type Card, Ink} from "@prisma/client";
+import {useStartCase} from "../../../.nuxt/imports";
 
 const props = defineProps<{
-  card: MAPPED_CARD,
+  card: Card,
 }>()
 
 const isLandscape = props.card.layout === 'landscape';
 
 const firstInkClasses = computed(() => {
-  const ink = props.card.firstInk;
+  const ink = props.card.ink1;
 
-  if (ink === 'Amber') return 'bg-lorcana-amber';
-  if (ink === 'Amethyst') return 'bg-lorcana-amethyst';
-  if (ink === 'Emerald') return 'bg-lorcana-emerald';
-  if (ink === 'Ruby') return 'bg-lorcana-ruby';
-  if (ink === 'Sapphire') return 'bg-lorcana-sapphire';
-  if (ink === 'Steel') return 'bg-lorcana-steel';
+  if (ink === Ink.amber) return 'bg-lorcana-amber';
+  if (ink === Ink.amethyst) return 'bg-lorcana-amethyst';
+  if (ink === Ink.emerald) return 'bg-lorcana-emerald';
+  if (ink === Ink.ruby) return 'bg-lorcana-ruby';
+  if (ink === Ink.sapphire) return 'bg-lorcana-sapphire';
+  if (ink === Ink.steel) return 'bg-lorcana-steel';
 
   return 'bg-gray-300';
 })
 
 const secondInkClasses = computed(() => {
-  const ink = props.card.secondInk;
+  const ink = props.card.ink1;
 
-  if (ink === 'Amber') return 'bg-lorcana-amber';
-  if (ink === 'Amethyst') return 'bg-lorcana-amethyst';
-  if (ink === 'Emerald') return 'bg-lorcana-emerald';
-  if (ink === 'Ruby') return 'bg-lorcana-ruby';
-  if (ink === 'Sapphire') return 'bg-lorcana-sapphire';
-  if (ink === 'Steel') return 'bg-lorcana-steel';
+  if (ink === Ink.amber) return 'bg-lorcana-amber';
+  if (ink === Ink.amethyst) return 'bg-lorcana-amethyst';
+  if (ink === Ink.emerald) return 'bg-lorcana-emerald';
+  if (ink === Ink.ruby) return 'bg-lorcana-ruby';
+  if (ink === Ink.sapphire) return 'bg-lorcana-sapphire';
+  if (ink === Ink.steel) return 'bg-lorcana-steel';
 
   return 'bg-gray-300';
 })
@@ -38,19 +39,19 @@ const secondInkClasses = computed(() => {
   <div class="relative flex justify-between items-center text-white">
     <div class="absolute inset-0 flex justify-stretch">
       <div :class="`w-full ${firstInkClasses}`"></div>
-      <div v-if="card.isDualInk" :class="`w-full ${secondInkClasses}`"></div>
+      <div v-if="card.ink2" :class="`w-full ${secondInkClasses}`"></div>
     </div>
 
-    <p :class="['relative z-10 w-full text-[0.1375in]', {'text-center': card.moveCost}, isLandscape && 'text-vertical']">
-      {{ card.inks }}
+    <p :class="['relative z-10 w-full text-[0.1375in]', {'text-center': card.movement}, isLandscape && 'text-vertical']">
+      {{ useStartCase(card.ink1) }}{{ card.ink2 ? ', ' + useStartCase(card.ink2) : '' }}
     </p>
 
     <div
-      v-if="card.moveCost"
+      v-if="card.movement"
       :class="['absolute z-10 flex items-center', isLandscape ? '-left-1 bottom-[0.0625in] transform-[rotate(-90deg)]' : '-top-1.5 left-[0.0625in]']"
     >
       <PrintCardIcon
-        :value="card.moveCost"
+        :value="card.movement"
         alt="Move Cost"
         heightClass="h-[0.4in]"
         image="/icons/card-parts/move-cost.png"

@@ -1,4 +1,4 @@
-import type {CARD} from "~/data.types";
+import type {CARD} from "./data.types";
 
 export const set7Cards: CARD[] = [
   {

@@ -1,10 +1,26 @@
-import {Sets} from '~/data/sets'
-import type {SET} from "~/app.types";
+import type {Set} from "@prisma/client";
 
-export default function useSets() {
-  const all: SET[] = Sets;
+const state = reactive<{
+  initialized: boolean;
+  sets: Set[];
+}>({
+  initialized: false,
+  sets: []
+})
+
+export default async function useSets() {
+
+  /**
+   * Get Cards
+   */
+  if (!state.initialized) {
+    await $fetch('/api/sets').then(response => {
+      state.sets = response;
+      state.initialized = true;
+    });
+  }
 
   return {
-    all,
+    all: useSortBy(state.sets, ['id']),
   }
 }

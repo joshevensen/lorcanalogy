@@ -1,17 +1,17 @@
 <script lang="ts" setup="">
-import type {CARD} from "~/app.types";
+import type {Card} from "@prisma/client";
 
 const props = defineProps<{
-  card: CARD;
+  card: Card;
 }>()
 
 const inkIcon = computed(() => {
-  if (props.card.ink === 'Amber') return '/icons/ink/amber.png';
-  if (props.card.ink === 'Amethyst') return '/icons/ink/amethyst.png';
-  if (props.card.ink === 'Emerald') return '/icons/ink/emerald.png';
-  if (props.card.ink === 'Ruby') return '/icons/ink/ruby.png';
-  if (props.card.ink === 'Sapphire') return '/icons/ink/sapphire.png';
-  if (props.card.ink === 'Steel') return '/icons/ink/steel.png';
+  if (props.card.ink1 === 'Amber') return '/icons/ink/amber.png';
+  if (props.card.ink1 === 'Amethyst') return '/icons/ink/amethyst.png';
+  if (props.card.ink1 === 'Emerald') return '/icons/ink/emerald.png';
+  if (props.card.ink1 === 'Ruby') return '/icons/ink/ruby.png';
+  if (props.card.ink1 === 'Sapphire') return '/icons/ink/sapphire.png';
+  if (props.card.ink1 === 'Steel') return '/icons/ink/steel.png';
 
   return null;
 })

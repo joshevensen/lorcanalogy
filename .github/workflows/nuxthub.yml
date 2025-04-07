@@ -7,9 +7,14 @@ on:
     branches:
       - main
 
+env:
+  DATABASE_URL: ${{ vars.DATABASE_URL }}
+  SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
+  SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+
 jobs:
   deploy:
-    name: "Deploy to NuxtHub"
+    name: "NuxtHub"
     runs-on: ubuntu-latest
     environment:
       name: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}

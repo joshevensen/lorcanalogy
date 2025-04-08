@@ -1,5 +1,4 @@
 import type {Card} from "@prisma/client";
-import {Rarity} from "@prisma/client";
 import useOptions from "~/composables/useOptions";
 import type {OPTION} from "~/app.types";
 
@@ -34,7 +33,7 @@ export default async function useCards() {
     keywords: [],
     classifications: [],
     rarities: options.rarity.map(option => {
-      if (option.value !== Rarity.enchanted) return option.value;
+      if (option.value !== 'enchanted') return option.value;
     }).filter(value => value !== undefined),
     sets: options.set.map(option => option.value),
     inkable: options.inkable.map(option => option.value),

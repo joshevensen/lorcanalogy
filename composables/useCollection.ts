@@ -1,5 +1,4 @@
 import type {Card, Collection} from "@prisma/client";
-import {Rarity} from "@prisma/client";
 import useOptions from "~/composables/useOptions";
 
 interface CollectionWithCard extends Collection {
@@ -31,7 +30,7 @@ export default async function useCollection() {
     inks: options.ink.map(option => option.value),
     types: options.type.map(option => option.value),
     rarities: options.rarity.map(option => {
-      if (option.value !== Rarity.enchanted) return option.value;
+      if (option.value !== "enchanted") return option.value;
     }).filter(value => value !== undefined),
     sets: options.set.map(option => option.value),
   })

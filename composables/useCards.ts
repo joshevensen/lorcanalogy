@@ -11,14 +11,21 @@ const state = reactive<{
 })
 
 export default async function useCards() {
+
+  const supabase = useSupabaseClient();
+
   /**
    * Get Cards
    */
   if (!state.initialized) {
-    await $fetch('/api/cards').then(response => {
-      state.cards = response;
-      state.initialized = true;
-    });
+    // await $fetch('/api/cards').then(response => {
+    //   state.cards = response;
+    //   state.initialized = true;
+    // });
+
+    const {data} = await supabase.from('Card').select('*')
+    state.cards = data || [];
+    state.initialized = true;
   }
 
   const options = await useOptions();

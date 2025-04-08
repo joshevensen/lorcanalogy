@@ -1,7 +1,7 @@
-export default defineEventHandler(async (event) => {
-  // const prisma = new PrismaClient();
-  //
-  // return prisma.card.findMany({include: {Collection: true}});
+import {PrismaClient} from "@prisma/client";
 
-  return []
+export default defineEventHandler(async (event) => {
+  const prisma = new PrismaClient();
+
+  return prisma.card.findMany({include: {Collection: true}});
 })

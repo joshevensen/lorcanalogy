@@ -1,6 +1,14 @@
-import type {CARD} from "./data.types";
+import type {CARD, SET} from "~/app.types";
 
-export const set7Cards: CARD[] = [
+export const set: SET = {
+  id: "set_ceb34c63638a4ce6b80e518393964c8f",
+  name: "Archazia's Island",
+  code: "7",
+  released_at: "2025-03-07",
+  prereleased_at: "2025-03-07",
+};
+
+export const cards: CARD[] = [
   {
     "id": "crd_b817b45c424b49b98e7978f1dcf3d7db",
     "name": "Rhino",

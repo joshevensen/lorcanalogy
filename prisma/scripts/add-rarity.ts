@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function addRarity(name: string) {
-  const normalizedName = name.trim();
+  const normalizedName = name.toLowerCase().trim();
 
   const rarity = await prisma.rarity.upsert({
     where: { name: normalizedName },

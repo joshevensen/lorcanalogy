@@ -1,5 +1,4 @@
-import type { COUNTS } from "~/app.types";
-import type { CARD } from "~/data/data.types";
+import type { COUNTS, CARD } from "~/app.types";
 
 export default function (cards: CARD[] | undefined): COUNTS | null {
   if (!cards) return null;

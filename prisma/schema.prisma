@@ -16,7 +16,7 @@ datasource db {
 
 model Ink {
   id    Int    @id @default(autoincrement())
-  name  String @unique // "amber", "amethyst", "emerald", "ruby", "sapphire", "steel"
+  name  String @unique
 
   Cards Card[]
 }
@@ -42,16 +42,16 @@ model Classification {
   Cards Card[]
 }
 
-model Franchise {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+model Keyword {
+  id     Int    @id @default(autoincrement())
+  name   String @unique
 
   Cards Card[]
 }
 
-model Keyword {
-  id     Int    @id @default(autoincrement())
-  name   String @unique
+model Franchise {
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
   Cards Card[]
 }
@@ -68,7 +68,7 @@ model Role {
 // ============================================================================
 
 model Set {
-  id          Int       @id
+  id          Int       @id @default(autoincrement())
   number      Int       @unique
   name        String    @unique
   description String?
@@ -103,21 +103,19 @@ model Card {
   setId        Int
   Rarity       Rarity         @relation(fields: [rarityId], references: [id])
   rarityId     Int
-  Type         Type           @relation(fields: [typeId], references: [id])
-  typeId       Int
   Franchise    Franchise?     @relation(fields: [franchiseId], references: [id])
-  franchiseId Int?
+  franchiseId  Int?
   Role         Role?          @relation(fields: [roleId], references: [id])
   roleId       Int?
 
-  Ink            Ink[]
-  Keywords       Keyword[]
+  Inks            Ink[]
+  Types           Type[]
+  Keywords        Keyword[]
   Classifications Classification[]
 
   @@unique([setId, number])
   @@index([setId])
   @@index([rarityId])
-  @@index([typeId])
   @@index([franchiseId])
   @@index([roleId])
   @@index([setNumber])

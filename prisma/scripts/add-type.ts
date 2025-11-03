@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function addType(name: string) {
-  const normalizedName = name.trim();
+  const normalizedName = name.toLowerCase().trim();
 
   const type = await prisma.type.upsert({
     where: { name: normalizedName },
@@ -39,4 +39,3 @@ async function main() {
 }
 
 main();
-

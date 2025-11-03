@@ -1,6 +1,14 @@
-import type { CARD } from "./data.types";
+import type { CARD, SET } from "~/app.types";
 
-export const set8Cards: CARD[] = [
+export const set: SET = {
+  id: "set_e4fe64374c144642a035ee7b8451f990",
+  name: "Reign of Jafar",
+  code: "8",
+  released_at: "2025-05-30",
+  prereleased_at: "2025-05-30",
+};
+
+export const cards: CARD[] = [
   {
     id: "crd_9977cd39e1244f29a352a5ef0564d3cb",
     name: "Louie",

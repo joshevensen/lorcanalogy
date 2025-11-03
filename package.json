@@ -13,7 +13,8 @@
     "postinstall": "nuxt prepare",
     "add:ink": "tsx prisma/scripts/add-ink.ts",
     "add:rarity": "tsx prisma/scripts/add-rarity.ts",
-    "add:type": "tsx prisma/scripts/add-type.ts"
+    "add:type": "tsx prisma/scripts/add-type.ts",
+    "add:set": "tsx prisma/scripts/add-set.ts"
   },
   "dependencies": {
     "@nuxt/content": "^3.2.2",

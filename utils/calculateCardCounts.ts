@@ -1,4 +1,5 @@
-import type {CARD, COUNTS} from "~/app.types";
+import type { COUNTS } from "~/app.types";
+import type { CARD } from "~/data/data.types";
 
 export default function (cards: CARD[] | undefined): COUNTS | null {
   if (!cards) return null;
@@ -16,7 +17,7 @@ export default function (cards: CARD[] | undefined): COUNTS | null {
       eight: 0,
       nine: 0,
       ten: 0,
-      'ten+': 0,
+      "ten+": 0,
     },
     rarities: {
       common: 0,
@@ -32,8 +33,8 @@ export default function (cards: CARD[] | undefined): COUNTS | null {
       items: 0,
       locations: 0,
       songs: 0,
-    }
-  }
+    },
+  };
 
   cards.forEach((card) => {
     // Cost
@@ -71,7 +72,7 @@ export default function (cards: CARD[] | undefined): COUNTS | null {
         counts.costs.ten++;
         break;
       default:
-        counts.costs['ten+']++;
+        counts.costs["ten+"]++;
     }
 
     // Rarity
@@ -97,12 +98,12 @@ export default function (cards: CARD[] | undefined): COUNTS | null {
     }
 
     // Type
-    if (card.type.includes('Song')) counts.types.songs++
-    else if (card.type.includes('Action')) counts.types.actions++
-    else if (card.type.includes('Character')) counts.types.characters++
-    else if (card.type.includes('Item')) counts.types.items++
-    else if (card.type.includes('Location')) counts.types.locations++
-  })
+    if (card.type.includes("Song")) counts.types.songs++;
+    else if (card.type.includes("Action")) counts.types.actions++;
+    else if (card.type.includes("Character")) counts.types.characters++;
+    else if (card.type.includes("Item")) counts.types.items++;
+    else if (card.type.includes("Location")) counts.types.locations++;
+  });
 
   return counts;
 }

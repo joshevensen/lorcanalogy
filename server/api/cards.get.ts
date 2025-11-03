@@ -1,7 +1,14 @@
-import {PrismaClient} from "@prisma/client";
+import { prisma } from "~/server/utils/prisma";
 
 export default defineEventHandler(async (event) => {
-  const prisma = new PrismaClient();
-
-  return prisma.card.findMany({include: {Collection: true}});
-})
+  try {
+    return await prisma.card.findMany({
+      include: { Collection: true },
+    });
+  } catch (error) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Failed to fetch cards",
+    });
+  }
+});

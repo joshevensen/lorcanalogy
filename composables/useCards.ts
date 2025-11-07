@@ -1,28 +1,25 @@
-import type { Card } from "@prisma/client";
-import useOptions from "~/composables/useOptions";
 import type { OPTION } from "~/app.types";
 
-const state = reactive<{
-  initialized: boolean;
-  cards: Card[];
-}>({
-  initialized: false,
-  cards: [],
-});
+interface CardsResponse {
+  cards: any[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
 
-export default async function useCards() {
-  /**
-   * Get Cards
-   */
-  if (!state.initialized) {
-    await $fetch("/api/cards").then((response) => {
-      state.cards = response;
-      state.initialized = true;
-    });
-  }
+interface UseCardsOptions {
+  ink: OPTION[];
+  type: OPTION[];
+  rarity: OPTION[];
+  set: OPTION[];
+  keyword: OPTION[];
+  classification: OPTION[];
+  inkable: OPTION[];
+  dualSingle: OPTION[];
+}
 
-  const options = await useOptions();
-
+export default function useCards(options: UseCardsOptions) {
   /**
    * Filters
    */
@@ -43,147 +40,96 @@ export default async function useCards() {
   });
 
   /**
-   * Sorted Cards
+   * Current page for pagination
    */
-  const sortedCards = computed((): Card[] => {
-    switch (filters.value.sort) {
-      case "set":
-        return useSortBy(state.cards, ["setNumber"]);
-      case "name":
-        return useSortBy(state.cards, ["fullName"]);
-      case "rarity":
-        return useSortBy(state.cards, ["rarity", "fullName"]);
-      case "type":
-        return useSortBy(state.cards, ["type", "rarity", "fullName"]);
-      default:
-        return state.cards;
-    }
-  });
-
-  function haveCommonElements(array1: any[], array2: any[]) {
-    array1 = array1.map((element) => useKebabCase(element));
-    array2 = array2.map((element) => useKebabCase(element));
-
-    return array1.some((element) => array2.includes(element));
-  }
+  const currentPage = ref(1);
+  const pageSize = 34;
 
   /**
-   * Filtered Cards
+   * Build query params from filters
    */
-  const filtered = computed((): Card[] => {
-    return sortedCards.value.filter((card) => {
-      // Ink
-      if (
-        !filters.value.inks.includes(card.ink1) &&
-        !filters.value.inks.includes(card.ink2)
-      )
-        return false;
+  const buildQueryParams = () => {
+    const params: Record<string, any> = {
+      page: currentPage.value,
+      limit: pageSize,
+      sort: filters.value.sort,
+    };
 
-      // Keyword
-      if (filters.value.keywords.length > 0) {
-        if (!haveCommonElements(filters.value.keywords, card.keywords))
-          return false;
-      }
-
-      // Classification
-      if (filters.value.classifications.length > 0) {
-        if (
-          !haveCommonElements(
-            filters.value.classifications,
-            card.classifications
-          )
-        )
-          return false;
-      }
-
-      // Type
-      if (!filters.value.types.includes(card.type)) return false;
-
-      // Rarity
-      if (!filters.value.rarities.includes(card.rarity)) return false;
-
-      // Set
-      if (!filters.value.sets.includes(card.setId)) return false;
-
-      // Inkable
-      if (filters.value.inkable.length === 0) return false;
-
-      if (filters.value.inkable.length === 1) {
-        if (filters.value.inkable.includes("inkable") && !card.inkable)
-          return false;
-        if (filters.value.inkable.includes("not_inkable") && card.inkable)
-          return false;
-      }
-
-      // Dual vs Single Ink
-      if (filters.value.dualSingle.length === 0) return false;
-
-      if (filters.value.dualSingle.length === 1) {
-        if (filters.value.dualSingle.includes("single")) {
-          if (card.ink2 !== null) return false;
-        }
-
-        if (filters.value.dualSingle.includes("dual")) {
-          if (card.ink2 === null) return false;
-        }
-      }
-
-      return true;
-    });
-  });
-
-  /**
-   * Cards by Pages
-   */
-  const byPage = computed(() => {
-    const pages = [];
-    const chunkSize = 9; // cards per page
-
-    for (let i = 0; i < filtered.value.length; i += chunkSize) {
-      const chunk: Card[] = filtered.value.slice(i, i + chunkSize);
-      pages.push(chunk);
+    // Add array parameters
+    if (filters.value.inks.length > 0) {
+      params["inks[]"] = filters.value.inks;
+    }
+    if (filters.value.types.length > 0) {
+      params["types[]"] = filters.value.types;
+    }
+    if (filters.value.keywords.length > 0) {
+      params["keywords[]"] = filters.value.keywords;
+    }
+    if (filters.value.classifications.length > 0) {
+      params["classifications[]"] = filters.value.classifications;
+    }
+    if (filters.value.rarities.length > 0) {
+      params["rarities[]"] = filters.value.rarities;
+    }
+    if (filters.value.sets.length > 0) {
+      params["sets[]"] = filters.value.sets;
+    }
+    if (filters.value.inkable.length > 0) {
+      params["inkable[]"] = filters.value.inkable;
+    }
+    if (filters.value.dualSingle.length > 0) {
+      params["dualSingle[]"] = filters.value.dualSingle;
     }
 
-    return pages;
-  });
+    return params;
+  };
 
+  /**
+   * Reactive query params
+   */
+  const queryParams = computed(() => buildQueryParams());
+
+  /**
+   * Reset to first page when filters change (but not page)
+   */
+  watch(
+    () => [
+      filters.value.inks,
+      filters.value.types,
+      filters.value.keywords,
+      filters.value.classifications,
+      filters.value.rarities,
+      filters.value.sets,
+      filters.value.inkable,
+      filters.value.dualSingle,
+      filters.value.sort,
+    ],
+    () => {
+      currentPage.value = 1; // Reset to first page on filter change
+    },
+    { deep: true }
+  );
+
+  /**
+   * Get keywords list from database
+   */
   const keywordsList = computed<OPTION[]>(() => {
-    let items: string[] = [];
-
-    state.cards.forEach((card) => {
-      card.keywords.forEach((keyword) => {
-        items.push(keyword);
-      });
-    });
-
-    return useUniq(items)
-      .sort()
-      .map((item) => {
-        return { label: useStartCase(item), value: useKebabCase(item) };
-      });
+    // Extract from current cards data (will be passed from page)
+    return options.keyword;
   });
 
+  /**
+   * Get classifications list from database
+   */
   const classificationsList = computed<OPTION[]>(() => {
-    let items: string[] = [];
-
-    state.cards.forEach((card) => {
-      card.classifications.forEach((classification) => {
-        items.push(classification);
-      });
-    });
-
-    return useUniq(items)
-      .sort()
-      .map((item) => {
-        return { label: useStartCase(item), value: useKebabCase(item) };
-      });
+    return options.classification;
   });
 
   return {
     filters,
-    all: state.cards,
-    filtered,
-    byPage,
+    currentPage,
+    pageSize,
+    queryParams,
     keywordsList,
     classificationsList,
   };

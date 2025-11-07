@@ -2,18 +2,26 @@
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
 
-defineProps<{
+const props = defineProps<{
   cards: any[],
-  columns: any
+  columns: any,
+  total?: number,
+  currentPage?: number,
+  onPageChange?: (page: number) => void
 }>()
+
+const table = ref();
+defineExpose({ exportCSV: () => table.value?.exportCSV() });
 </script>
 
 <template>
   <DataTable
     ref="table"
-    :rows="42"
+    :rows="34"
     :value="cards"
-    currentPageReportTemplate="{first} to {last}"
+    :totalRecords="total || cards.length"
+    :first="((currentPage || 1) - 1) * 34"
+    currentPageReportTemplate="{first} to {last} of {totalRecords}"
     defaultSortBy="setNumber"
     exportFilename="lorcana-cards"
     paginator
@@ -23,6 +31,8 @@ defineProps<{
     size="small"
     sortMode="multiple"
     stripedRows
+    @page="(event: any) => onPageChange?.(event.page + 1)"
+    lazy
   >
     <Column v-if="columns.image" class="w-12 text-center" field="fullName" header="Name">
       <template #body="{data}">

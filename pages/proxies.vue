@@ -1,7 +1,51 @@
 <script lang="ts" setup>
 definePageMeta({title: "Proxies", layout: 'print'})
 
-const cards = await useCards();
+// Fetch options from API
+const { data: optionsData } = await useAsyncData("options", () =>
+  $fetch("/api/options")
+);
+
+if (!optionsData.value) {
+  throw new Error("Failed to load options");
+}
+
+// Fetch all cards for printing (no pagination)
+const cardsState = useCards(optionsData.value);
+const queryParams = computed(() => ({
+  ...cardsState.queryParams.value,
+  limit: 10000, // Large limit to get all cards
+  page: 1,
+}));
+
+const { data: cardsData } = await useAsyncData<{
+  cards: any[];
+  total: number;
+}>(
+  "proxies-cards",
+  () => $fetch<{ cards: any[]; total: number }>("/api/cards", { query: queryParams.value }),
+  {
+    watch: [queryParams],
+    default: () => ({
+      cards: [],
+      total: 0,
+    }),
+  }
+);
+
+// Create byPage computed for client-side pagination (9 cards per page for printing)
+const byPage = computed(() => {
+  const pages = [];
+  const chunkSize = 9;
+  const cards = cardsData.value?.cards || [];
+  
+  for (let i = 0; i < cards.length; i += chunkSize) {
+    pages.push(cards.slice(i, i + chunkSize));
+  }
+  
+  return pages;
+});
+
 const showFilters = ref(false);
 const pageIndex = ref(0);
 
@@ -34,13 +78,13 @@ function openFilters() {
       <Paginator
         v-model:first="pageIndex"
         :rows="1"
-        :totalRecords="cards.byPage.value.length"
+        :totalRecords="byPage.length"
         template="JumpToPageDropdown"
       >
         <template #end>
           <div class="flex items-center gap-2">
-            <p class="mr-2 italic text-gray-500">{{ cards.filtered.value.length }} cards & {{
-                cards.byPage.value.length
+            <p class="mr-2 italic text-gray-500">{{ cardsData?.total || 0 }} cards & {{
+                byPage.length
               }}
               pages</p>
             <UiButton class="hidden! sm:flex!" icon="filter" label="Filters" @click="openFilters"/>
@@ -52,18 +96,18 @@ function openFilters() {
       <div class="my-4 bg-white overflow-x-auto">
         <PrintPage>
           <PrintCardGrid>
-            <PrintCard v-for="card in cards.byPage.value[pageIndex]" :key="card.id" :card="card"/>
+            <PrintCard v-for="card in byPage[pageIndex]" :key="card.id" :card="card"/>
           </PrintCardGrid>
         </PrintPage>
       </div>
 
-      <Paginator v-model:first="pageIndex" :rows="1" :totalRecords="cards.byPage.value.length"/>
+      <Paginator v-model:first="pageIndex" :rows="1" :totalRecords="byPage.length"/>
     </div>
 
-    <Filters v-model:visible="showFilters" :filters="cards.filters.value" includeSort/>
+    <CardsFilters v-model:visible="showFilters" :filters="cardsState.filters.value" :options="optionsData" includeSort/>
 
     <template #printable>
-      <LazyPrintPage v-for="(page, index) in cards.byPage.value" :key="index">
+      <LazyPrintPage v-for="(page, index) in byPage" :key="index">
         <LazyPrintCardGrid>
           <LazyPrintCard v-for="card in page" :key="card.id" :card="card"/>
         </LazyPrintCardGrid>

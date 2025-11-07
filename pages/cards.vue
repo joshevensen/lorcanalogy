@@ -1,22 +1,78 @@
 <script lang="ts" setup>
-import {useStartCase} from "../.nuxt/imports";
+definePageMeta({ title: "Cards", layout: "table" });
 
-definePageMeta({title: "Cards", layout: 'table'})
+// Fetch options from API
+const { data: optionsData } = await useAsyncData("options", () =>
+  $fetch("/api/options")
+);
 
-const cards = await useCards();
+if (!optionsData.value) {
+  throw new Error("Failed to load options");
+}
+
+// Fetch cards data
+const cardsState = useCards(optionsData.value);
+const queryParams = computed(() => cardsState.queryParams.value);
+
+interface CardsResponse {
+  cards: any[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+const {
+  data: cardsData,
+  refresh,
+  pending,
+} = await useAsyncData<CardsResponse>(
+  "cards",
+  () => {
+    console.log("Fetching cards with params:", queryParams.value);
+    return $fetch<CardsResponse>("/api/cards", { query: queryParams.value });
+  },
+  {
+    watch: [queryParams],
+    default: () => ({
+      cards: [],
+      total: 0,
+      page: 1,
+      limit: 34,
+      totalPages: 0,
+    }),
+  }
+);
+
+// Debug: log the response
+watch(
+  cardsData,
+  (newData) => {
+    console.log("Cards data received:", {
+      cardsCount: newData?.cards?.length || 0,
+      total: newData?.total || 0,
+      page: newData?.page || 0,
+      firstCard: newData?.cards?.[0],
+    });
+  },
+  { immediate: true }
+);
+
+// Watch for page changes to refresh
+watch(cardsState.currentPage, () => {
+  refresh();
+});
+
 const table = ref();
 const showFilters = ref(false);
 const showColumns = ref(false);
 
-const display = ref('list');
+const display = ref("list");
 const options = ref([
-  {name: 'List', value: 'list'},
-  {name: 'Grid', value: 'grid'},
-  {name: 'Table', value: 'table'}
+  { name: "List", value: "list" },
+  { name: "Grid", value: "grid" },
+  { name: "Table", value: "table" },
 ]);
-
-// console.log('classifications', cards.classificationsList.value);
-// console.log('keywords', cards.keywordsList.value);
 
 const columns = ref({
   image: true,
@@ -38,24 +94,50 @@ const columns = ref({
   moveCost: true,
   keywords: false,
   classifications: false,
-})
+});
 
 const columnKeys = Object.keys(columns.value);
 
 const filteredCards = computed(() => {
-  return cards.filtered.value.map((card) => {
+  return (cardsData.value?.cards || []).map((card: any) => {
+    // Get ink names - first two inks
+    const inkNames =
+      card.Inks?.slice(0, 2).map((ink: any) => useStartCase(ink.name)) || [];
+    const inks = inkNames.join(", ");
+
+    // Get primary type
+    const type = card.Types?.[0]?.name ? useStartCase(card.Types[0].name) : "";
+
+    // Get rarity
+    const rarity = card.Rarity?.name ? useStartCase(card.Rarity.name) : "";
+
+    // Get keywords
+    const keywords = card.Keywords?.map((kw: any) => kw.name).join(", ") || "";
+
+    // Get classifications
+    const classifications =
+      card.Classifications?.map((cls: any) => cls.name).join(", ") || "";
+
+    // Build fullName
+    const fullName = card.name + (card.version ? ` ${card.version}` : "");
+
+    // Check if dual ink
+    const isDualInk = card.Inks?.length > 1;
+
     return {
       ...card,
-      inks: useStartCase(card.ink1) + `${card.ink2 ? ', ' + useStartCase(card.ink2) : ''}`,
-      inkable: card.inkable ? 'Yes' : 'No',
-      isDualInk: card.ink2 ? 'Yes' : 'No',
-      type: useStartCase(card.type),
-      keywords: card.keywords.join(', '),
-      classifications: card.classifications.join(', '),
-      rarity: useStartCase(card.rarity),
-    }
-  })
-})
+      fullName,
+      inks,
+      inkable: card.inkable ? "Yes" : "No",
+      isDualInk: isDualInk ? "Yes" : "No",
+      type,
+      keywords,
+      classifications,
+      rarity,
+      setId: card.Set?.id || card.setId,
+    };
+  });
+});
 
 function exportCSV() {
   table.value.exportCSV();
@@ -74,29 +156,61 @@ function openColumns() {
   <div class="mt-12">
     <div class="bg-white mb-4 p-2 flex justify-between items-center">
       <div class="flex items-center gap-4">
-        <!--        <SelectButton :value="display" :options="options" optionLabel="name" size="small" />-->
-        <p class="italic text-gray-400">{{ filteredCards.length }} of {{ cards.all.length }} cards</p>
+        <p class="italic text-gray-400">
+          {{ filteredCards.length }} of {{ cardsData?.total || 0 }} cards
+        </p>
       </div>
 
       <div class="flex items-center gap-2">
-        <UiButton class="hidden! sm:flex!" icon="download" label="Download CSV" @click="exportCSV()"/>
-        <UiButton class="hidden! sm:flex!" icon="server" label="Columns" @click="openColumns"/>
-        <UiButton class="hidden! sm:flex!" icon="filter" label="Filters" @click="openFilters"/>
+        <UiButton
+          class="hidden! sm:flex!"
+          icon="download"
+          label="Download CSV"
+          @click="exportCSV()"
+        />
+        <UiButton
+          class="hidden! sm:flex!"
+          icon="server"
+          label="Columns"
+          @click="openColumns"
+        />
+        <UiButton
+          class="hidden! sm:flex!"
+          icon="filter"
+          label="Filters"
+          @click="openFilters"
+        />
 
-        <UiButtonIcon class="sm:hidden!" icon="download" @click="exportCSV()"/>
-        <UiButtonIcon class="sm:hidden!" icon="server" @click="openColumns"/>
-        <UiButtonIcon class="sm:hidden!" icon="filter" @click="openFilters"/>
+        <UiButtonIcon class="sm:hidden!" icon="download" @click="exportCSV()" />
+        <UiButtonIcon class="sm:hidden!" icon="server" @click="openColumns" />
+        <UiButtonIcon class="sm:hidden!" icon="filter" @click="openFilters" />
       </div>
     </div>
 
-    <CardsTable :cards="filteredCards" :columns="columns"/>
+    <CardsTable
+      :cards="filteredCards"
+      :columns="columns"
+      :total="cardsData?.total || 0"
+      :currentPage="cardsState.currentPage.value"
+      :onPageChange="(page: number) => (cardsState.currentPage.value = page)"
+      ref="table"
+    />
 
-    <CardsFilters v-model:visible="showFilters" :filters="cards.filters.value"/>
+    <CardsFilters
+      v-model:visible="showFilters"
+      :filters="cardsState.filters.value"
+      :options="optionsData"
+    />
 
     <UiDrawer v-model:visible="showColumns" header="Toggle Columns">
       <div class="space-y-3">
-        <UiField v-for="key in columnKeys" :key="key" :label="useStartCase(key)" position="right">
-          <UiCheckbox v-model="columns[key as keyof typeof columns]"/>
+        <UiField
+          v-for="key in columnKeys"
+          :key="key"
+          :label="useStartCase(key)"
+          position="right"
+        >
+          <UiCheckbox v-model="columns[key as keyof typeof columns]" />
         </UiField>
       </div>
     </UiDrawer>

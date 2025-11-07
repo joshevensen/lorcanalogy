@@ -51,6 +51,11 @@ export interface SET {
   prereleased_at: string;
 }
 
+export interface OPTION {
+  label: string;
+  value: string;
+}
+
 export interface COUNTS {
   total: number;
   costs: {

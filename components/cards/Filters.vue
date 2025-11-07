@@ -3,10 +3,9 @@ const visible = defineModel('visible', {required: true, default: false});
 
 defineProps<{
   filters: any
+  options: any
   includeSort?: boolean,
 }>()
-
-const options = await useOptions();
 </script>
 
 <template>

@@ -51,7 +51,8 @@ export default defineEventHandler(async (event) => {
     // Ink filter - check if card has any of the selected inks
     // Only apply if not all inks are selected
     if (inks.length > 0) {
-      const inkNames = inks.map((ink) => toStartCase(ink as string));
+      // Use values as-is since database stores lowercase
+      const inkNames = inks.map((ink) => (ink as string).toLowerCase());
       const isAllInksSelected = inkNames.length === allInkNames.length && 
         inkNames.every(name => allInkNames.includes(name));
       
@@ -80,7 +81,8 @@ export default defineEventHandler(async (event) => {
 
     // Type filter - only apply if not all types are selected
     if (types.length > 0) {
-      const typeNames = types.map((type) => toStartCase(type as string));
+      // Use values as-is since database stores lowercase
+      const typeNames = types.map((type) => (type as string).toLowerCase());
       const isAllTypesSelected = typeNames.length === allTypeNames.length && 
         typeNames.every(name => allTypeNames.includes(name));
       
@@ -100,7 +102,7 @@ export default defineEventHandler(async (event) => {
       where.Keywords = {
         some: {
           name: {
-            in: keywords.map((kw) => toStartCase(kw as string)),
+            in: keywords.map((kw) => (kw as string).toLowerCase()),
           },
         },
       };
@@ -111,7 +113,7 @@ export default defineEventHandler(async (event) => {
       where.Classifications = {
         some: {
           name: {
-            in: classifications.map((cls) => toStartCase(cls as string)),
+            in: classifications.map((cls) => (cls as string).toLowerCase()),
           },
         },
       };
@@ -119,7 +121,8 @@ export default defineEventHandler(async (event) => {
 
     // Rarity filter - only apply if not all rarities are selected
     if (rarities.length > 0) {
-      const rarityNames = rarities.map((rarity) => toStartCase(rarity as string));
+      // Use values as-is since database stores lowercase
+      const rarityNames = rarities.map((rarity) => (rarity as string).toLowerCase());
       const isAllRaritiesSelected = rarityNames.length === allRarityNames.length && 
         rarityNames.every(name => allRarityNames.includes(name));
       
@@ -180,56 +183,62 @@ export default defineEventHandler(async (event) => {
     }
 
     // Fetch cards with relations first (we'll handle dual/single ink post-query)
-    // For accurate pagination with dual/single filter, we need to fetch more and filter
+    // For accurate pagination with dual/single filter, we need to fetch all matching cards and filter
     const shouldFilterDualSingle = dualSingle.length > 0 && dualSingle.length === 1;
-    
-    // Fetch a larger batch if we need to filter for dual/single ink
-    const fetchLimit = shouldFilterDualSingle ? limit * 3 : limit;
     const skip = (page - 1) * limit;
 
-    let cards = await prisma.card.findMany({
-      where,
-      include: {
-        Inks: true,
-        Types: true,
-        Keywords: true,
-        Classifications: true,
-        Rarity: true,
-        Set: true,
-      },
-      orderBy,
-      take: shouldFilterDualSingle ? fetchLimit : limit,
-      skip: shouldFilterDualSingle ? 0 : skip,
-    });
-
-    // Apply dual/single ink filter post-query
-    if (shouldFilterDualSingle) {
-      if (dualSingle.includes("dual")) {
-        cards = cards.filter((card) => card.Inks.length > 1);
-      } else if (dualSingle.includes("single")) {
-        cards = cards.filter((card) => card.Inks.length === 1);
-      }
-      // Apply pagination after filtering
-      cards = cards.slice(skip, skip + limit);
-    }
-
-    // Get total count for pagination
-    // For dual/single filter, we need to count all matching cards
+    // When filtering for dual/single ink, we need to fetch all matching cards first,
+    // then filter and paginate, because we can't know which cards will pass the filter
+    let cards: any[];
     let total: number;
+    
     if (shouldFilterDualSingle) {
-      // Fetch all matching cards to count (limited to reasonable batch)
-      const allMatching = await prisma.card.findMany({
+      // Fetch all cards matching the other filters (no limit/skip yet)
+      const allCards = await prisma.card.findMany({
         where,
         include: {
           Inks: true,
+          Types: true,
+          Keywords: true,
+          Classifications: true,
+          Rarity: true,
+          Set: true,
         },
+        orderBy,
       });
+
+      // Apply dual/single ink filter
+      let filteredCards: any[];
       if (dualSingle.includes("dual")) {
-        total = allMatching.filter((card) => card.Inks.length > 1).length;
+        filteredCards = allCards.filter((card) => card.Inks && card.Inks.length > 1);
+      } else if (dualSingle.includes("single")) {
+        filteredCards = allCards.filter((card) => card.Inks && card.Inks.length === 1);
       } else {
-        total = allMatching.filter((card) => card.Inks.length === 1).length;
+        filteredCards = allCards;
       }
+
+      // Get total from filtered cards before pagination
+      total = filteredCards.length;
+
+      // Apply pagination after filtering
+      cards = filteredCards.slice(skip, skip + limit);
     } else {
+      // Normal query with pagination
+      cards = await prisma.card.findMany({
+        where,
+        include: {
+          Inks: true,
+          Types: true,
+          Keywords: true,
+          Classifications: true,
+          Rarity: true,
+          Set: true,
+        },
+        orderBy,
+        take: limit,
+        skip: skip,
+      });
+      
       total = await prisma.card.count({ where });
     }
 

@@ -2,10 +2,14 @@
 import type {Card} from "@prisma/client";
 
 const props = defineProps<{
-  card: Card,
+  card: Card & {
+    Types?: Array<{ id: number; name: string }>;
+  },
 }>()
 
-const isLandscape = props.card.layout === 'landscape';
+const isLandscape = computed(() => {
+  return props.card.Types?.some(type => type.name.toLowerCase() === 'location') ?? false;
+});
 </script>
 
 <template>

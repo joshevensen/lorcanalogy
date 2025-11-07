@@ -18,15 +18,40 @@ function toStartCase(str: string): string {
 
 export default defineEventHandler(async (event) => {
   try {
+    // Define custom rarity order
+    const rarityOrder = [
+      'common',
+      'uncommon',
+      'rare',
+      'super_rare',
+      'legendary',
+      'enchanted',
+      'epic',
+      'iconic',
+    ];
+
     // Fetch all options from database
     const [inks, types, rarities, sets, keywords, classifications] = await Promise.all([
       prisma.ink.findMany({ orderBy: { name: "asc" } }),
       prisma.type.findMany({ orderBy: { name: "asc" } }),
-      prisma.rarity.findMany({ orderBy: { name: "asc" } }),
+      prisma.rarity.findMany(),
       prisma.set.findMany({ orderBy: { id: "asc" } }),
       prisma.keyword.findMany({ orderBy: { name: "asc" } }),
       prisma.classification.findMany({ orderBy: { name: "asc" } }),
     ]);
+
+    // Sort rarities by custom order
+    const sortedRarities = rarities.sort((a, b) => {
+      const indexA = rarityOrder.indexOf(a.name);
+      const indexB = rarityOrder.indexOf(b.name);
+      
+      // If rarity not in order list, put it at the end
+      if (indexA === -1 && indexB === -1) return 0;
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      
+      return indexA - indexB;
+    });
 
     // Transform to OPTION format
     return {
@@ -38,7 +63,7 @@ export default defineEventHandler(async (event) => {
         label: type.name,
         value: toKebabCase(type.name),
       })),
-      rarity: rarities.map((rarity) => ({
+      rarity: sortedRarities.map((rarity) => ({
         label: rarity.name,
         value: toKebabCase(rarity.name),
       })),

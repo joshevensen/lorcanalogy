@@ -1,72 +1,77 @@
 <script lang="ts" setup>
-import {type Card, Ink} from "@prisma/client";
+import {type Card} from "@prisma/client";
 
 const props = defineProps<{
-  card: Card,
+  card: Card & {
+    Inks?: Array<{ id: number; name: string }>;
+    Types?: Array<{ id: number; name: string }>;
+  },
 }>()
 
-const isLandscape = props.card.layout === 'landscape';
+const isLandscape = computed(() => {
+  return props.card.Types?.some(type => type.name.toLowerCase() === 'location') ?? false;
+});
 
 const background = computed(() => {
-  const firstInk = props.card.ink1;
-  const secondInk = props.card.ink2;
+  const firstInk = props.card.Inks?.[0]?.name;
+  const secondInk = props.card.Inks?.[1]?.name;
   let classes = '';
 
-  if (firstInk === Ink.amber) {
+  if (firstInk === 'amber') {
     if (secondInk) {
-      if (secondInk === Ink.amethyst) classes += 'bg-[url(/icons/ink/watermarks/amber-amethyst.png)]';
-      if (secondInk === Ink.emerald) classes += 'bg-[url(/icons/ink/watermarks/amber-emerald.png)]';
-      if (secondInk === Ink.ruby) classes += 'bg-[url(/icons/ink/watermarks/amber-ruby.png)]';
-      if (secondInk === Ink.sapphire) classes += 'bg-[url(/icons/ink/watermarks/amber-sapphire.png)]';
-      if (secondInk === Ink.steel) classes += 'bg-[url(/icons/ink/watermarks/amber-steel.png)]';
+      if (secondInk === 'amethyst') classes += 'bg-[url(/icons/ink/watermarks/amber-amethyst.png)]';
+      if (secondInk === 'emerald') classes += 'bg-[url(/icons/ink/watermarks/amber-emerald.png)]';
+      if (secondInk === 'ruby') classes += 'bg-[url(/icons/ink/watermarks/amber-ruby.png)]';
+      if (secondInk === 'sapphire') classes += 'bg-[url(/icons/ink/watermarks/amber-sapphire.png)]';
+      if (secondInk === 'steel') classes += 'bg-[url(/icons/ink/watermarks/amber-steel.png)]';
     } else {
       classes += 'bg-[url(/icons/ink/watermarks/amber.png)]';
     }
   }
 
-  if (firstInk === Ink.amethyst) {
+  if (firstInk === 'amethyst') {
     if (secondInk) {
-      if (secondInk === Ink.emerald) classes += 'bg-[url(/icons/ink/watermarks/amethyst-emerald.png)]';
-      if (secondInk === Ink.ruby) classes += 'bg-[url(/icons/ink/watermarks/amethyst-ruby.png)]';
-      if (secondInk === Ink.sapphire) classes += 'bg-[url(/icons/ink/watermarks/amethyst-sapphire.png)]';
-      if (secondInk === Ink.steel) classes += 'bg-[url(/icons/ink/watermarks/amethyst-steel.png)]';
+      if (secondInk === 'emerald') classes += 'bg-[url(/icons/ink/watermarks/amethyst-emerald.png)]';
+      if (secondInk === 'ruby') classes += 'bg-[url(/icons/ink/watermarks/amethyst-ruby.png)]';
+      if (secondInk === 'sapphire') classes += 'bg-[url(/icons/ink/watermarks/amethyst-sapphire.png)]';
+      if (secondInk === 'steel') classes += 'bg-[url(/icons/ink/watermarks/amethyst-steel.png)]';
 
     } else {
       classes += 'bg-[url(/icons/ink/watermarks/amethyst.png)]';
     }
   }
 
-  if (firstInk === Ink.emerald) {
+  if (firstInk === 'emerald') {
     if (secondInk) {
-      if (secondInk === Ink.ruby) classes += 'bg-[url(/icons/ink/watermarks/emerald-ruby.png)]';
-      if (secondInk === Ink.sapphire) classes += 'bg-[url(/icons/ink/watermarks/emerald-sapphire.png)]';
-      if (secondInk === Ink.steel) classes += 'bg-[url(/icons/ink/watermarks/emerald-steel.png)]';
+      if (secondInk === 'ruby') classes += 'bg-[url(/icons/ink/watermarks/emerald-ruby.png)]';
+      if (secondInk === 'sapphire') classes += 'bg-[url(/icons/ink/watermarks/emerald-sapphire.png)]';
+      if (secondInk === 'steel') classes += 'bg-[url(/icons/ink/watermarks/emerald-steel.png)]';
 
     } else {
       classes += 'bg-[url(/icons/ink/watermarks/emerald.png)]';
     }
   }
 
-  if (firstInk === Ink.ruby) {
+  if (firstInk === 'ruby') {
     if (secondInk) {
-      if (secondInk === Ink.sapphire) classes += 'bg-[url(/icons/ink/watermarks/ruby-sapphire.png)]';
-      if (secondInk === Ink.steel) classes += 'bg-[url(/icons/ink/watermarks/ruby-steel.png)]';
+      if (secondInk === 'sapphire') classes += 'bg-[url(/icons/ink/watermarks/ruby-sapphire.png)]';
+      if (secondInk === 'steel') classes += 'bg-[url(/icons/ink/watermarks/ruby-steel.png)]';
 
     } else {
       classes += 'bg-[url(/icons/ink/watermarks/ruby.png)]';
     }
   }
 
-  if (firstInk === Ink.sapphire) {
+  if (firstInk === 'sapphire') {
     if (secondInk) {
-      if (secondInk === Ink.steel) classes += 'bg-[url(/icons/ink/watermarks/sapphire-steel.png)]';
+      if (secondInk === 'steel') classes += 'bg-[url(/icons/ink/watermarks/sapphire-steel.png)]';
 
     } else {
       classes += 'bg-[url(/icons/ink/watermarks/sapphire.png)]';
     }
   }
 
-  if (firstInk === Ink.steel) {
+  if (firstInk === 'steel') {
     classes += 'bg-[url(/icons/ink/watermarks/steel.png)]';
   }
 

@@ -1,35 +1,40 @@
 <script lang="ts" setup>
-import {type Card, Ink} from "@prisma/client";
+import {type Card} from "@prisma/client";
 import {useStartCase} from "../../../.nuxt/imports";
 
 const props = defineProps<{
-  card: Card,
+  card: Card & {
+    Inks?: Array<{ id: number; name: string }>;
+    Types?: Array<{ id: number; name: string }>;
+  },
 }>()
 
-const isLandscape = props.card.layout === 'landscape';
+const isLandscape = computed(() => {
+  return props.card.Types?.some(type => type.name.toLowerCase() === 'location') ?? false;
+});
 
 const firstInkClasses = computed(() => {
-  const ink = props.card.ink1;
+  const ink = props.card.Inks?.[0]?.name;
 
-  if (ink === Ink.amber) return 'bg-lorcana-amber';
-  if (ink === Ink.amethyst) return 'bg-lorcana-amethyst';
-  if (ink === Ink.emerald) return 'bg-lorcana-emerald';
-  if (ink === Ink.ruby) return 'bg-lorcana-ruby';
-  if (ink === Ink.sapphire) return 'bg-lorcana-sapphire';
-  if (ink === Ink.steel) return 'bg-lorcana-steel';
+  if (ink === 'amber') return 'bg-lorcana-amber';
+  if (ink === 'amethyst') return 'bg-lorcana-amethyst';
+  if (ink === 'emerald') return 'bg-lorcana-emerald';
+  if (ink === 'ruby') return 'bg-lorcana-ruby';
+  if (ink === 'sapphire') return 'bg-lorcana-sapphire';
+  if (ink === 'steel') return 'bg-lorcana-steel';
 
   return 'bg-gray-300';
 })
 
 const secondInkClasses = computed(() => {
-  const ink = props.card.ink1;
+  const ink = props.card.Inks?.[1]?.name;
 
-  if (ink === Ink.amber) return 'bg-lorcana-amber';
-  if (ink === Ink.amethyst) return 'bg-lorcana-amethyst';
-  if (ink === Ink.emerald) return 'bg-lorcana-emerald';
-  if (ink === Ink.ruby) return 'bg-lorcana-ruby';
-  if (ink === Ink.sapphire) return 'bg-lorcana-sapphire';
-  if (ink === Ink.steel) return 'bg-lorcana-steel';
+  if (ink === 'amber') return 'bg-lorcana-amber';
+  if (ink === 'amethyst') return 'bg-lorcana-amethyst';
+  if (ink === 'emerald') return 'bg-lorcana-emerald';
+  if (ink === 'ruby') return 'bg-lorcana-ruby';
+  if (ink === 'sapphire') return 'bg-lorcana-sapphire';
+  if (ink === 'steel') return 'bg-lorcana-steel';
 
   return 'bg-gray-300';
 })
@@ -39,11 +44,11 @@ const secondInkClasses = computed(() => {
   <div class="relative flex justify-between items-center text-white">
     <div class="absolute inset-0 flex justify-stretch">
       <div :class="`w-full ${firstInkClasses}`"></div>
-      <div v-if="card.ink2" :class="`w-full ${secondInkClasses}`"></div>
+      <div v-if="card.Inks && card.Inks.length > 1" :class="`w-full ${secondInkClasses}`"></div>
     </div>
 
     <p :class="['relative z-10 w-full text-[0.1375in]', {'text-center': card.movement}, isLandscape && 'text-vertical']">
-      {{ useStartCase(card.ink1) }}{{ card.ink2 ? ', ' + useStartCase(card.ink2) : '' }}
+      {{ card.Inks?.[0]?.name ? useStartCase(card.Inks[0].name) : '' }}{{ card.Inks?.[1]?.name ? ', ' + useStartCase(card.Inks[1].name) : '' }}
     </p>
 
     <div

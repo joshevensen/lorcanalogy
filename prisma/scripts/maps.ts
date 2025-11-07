@@ -24,6 +24,33 @@ export function mapSetData(setData: SET): Prisma.SetCreateInput {
  * - Processing multi-ink cards
  * - Handling keywords, classifications arrays
  */
+/**
+ * Pads a card number to 3 digits, handling letters
+ * Examples:
+ * - "1" -> "001"
+ * - "10" -> "010"
+ * - "100" -> "100"
+ * - "4a" -> "004a"
+ * - "4b" -> "004b"
+ */
+function padCardNumber(number: string): string {
+  // Match the numeric part at the start and any trailing letters
+  const match = number.match(/^(\d+)([a-z]*)$/i);
+  
+  if (!match) {
+    // If it doesn't match the pattern, return as-is
+    return number;
+  }
+  
+  const numericPart = match[1];
+  const letterPart = match[2] || '';
+  
+  // Pad the numeric part to 3 digits
+  const paddedNumeric = numericPart.padStart(3, '0');
+  
+  return paddedNumeric + letterPart;
+}
+
 export function mapCardData(cardData: CARD): Prisma.CardCreateInput {
   const setId = parseInt(cardData.set.code);
 
@@ -36,7 +63,7 @@ export function mapCardData(cardData: CARD): Prisma.CardCreateInput {
   return {
     // Basic fields
     setNumber: setId,
-    number: cardData.collector_number,
+    number: padCardNumber(cardData.collector_number),
     tcgPlayerId: cardData.tcgplayer_id ?? null,
 
     // Image - using normal size

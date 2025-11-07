@@ -29,7 +29,6 @@ const {
 } = await useAsyncData<CardsResponse>(
   "cards",
   () => {
-    console.log("Fetching cards with params:", queryParams.value);
     return $fetch<CardsResponse>("/api/cards", { query: queryParams.value });
   },
   {
@@ -42,20 +41,6 @@ const {
       totalPages: 0,
     }),
   }
-);
-
-// Debug: log the response
-watch(
-  cardsData,
-  (newData) => {
-    console.log("Cards data received:", {
-      cardsCount: newData?.cards?.length || 0,
-      total: newData?.total || 0,
-      page: newData?.page || 0,
-      firstCard: newData?.cards?.[0],
-    });
-  },
-  { immediate: true }
 );
 
 // Watch for page changes to refresh
@@ -84,7 +69,7 @@ const columns = ref({
   number: true,
   inks: true,
   inkable: true,
-  isDualInk: false,
+  isDualInk: true,
   type: true,
   rarity: true,
   cost: true,
@@ -124,6 +109,9 @@ const filteredCards = computed(() => {
     // Check if dual ink
     const isDualInk = card.Inks?.length > 1;
 
+    // Build set/card number in format "set-card" (e.g., "1-103")
+    const setCardNumber = `${card.setNumber}-${card.number}`;
+
     return {
       ...card,
       fullName,
@@ -135,6 +123,7 @@ const filteredCards = computed(() => {
       classifications,
       rarity,
       setId: card.Set?.id || card.setId,
+      setCardNumber,
     };
   });
 });

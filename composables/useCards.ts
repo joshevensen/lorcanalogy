@@ -30,10 +30,10 @@ export default function useCards(options: UseCardsOptions) {
     keywords: [],
     classifications: [],
     rarities: options.rarity
-      .map((option) => {
-        if (option.value !== "enchanted") return option.value;
+      .filter((option) => {
+        return option.value !== "enchanted" && option.value !== "epic" && option.value !== "iconic";
       })
-      .filter((value) => value !== undefined),
+      .map((option) => option.value),
     sets: options.set.map((option) => option.value),
     inkable: options.inkable.map((option) => option.value),
     dualSingle: options.dualSingle.map((option) => option.value),

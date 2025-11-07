@@ -42,7 +42,7 @@ defineExpose({ exportCSV: () => table.value?.exportCSV() });
     <Column v-if="columns.fullName" :sortable="true" class="font-bold min-w-64" field="fullName" header="Name"/>
     <Column v-if="columns.name" :sortable="true" class="font-bold min-w-48" field="name" header="Name"/>
     <Column v-if="columns.version" :sortable="true" class="" field="version" header="Version"/>
-    <Column v-if="columns.setNumber" :sortable="true" field="setNumber" header="Set/Card Number"/>
+    <Column v-if="columns.setNumber" :sortable="true" field="setCardNumber" header="Set/Card Number"/>
     <Column v-if="columns.setId" :sortable="true" field="setId" header="Set"/>
     <Column v-if="columns.number" :sortable="true" field="number" header="Card Number"/>
     <Column v-if="columns.inks" :sortable="true" field="inks" header="Ink"/>

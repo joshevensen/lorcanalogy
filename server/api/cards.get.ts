@@ -8,6 +8,44 @@ function toStartCase(str: string): string {
     .join(" ");
 }
 
+// Cache reference data to avoid querying on every request
+// These rarely change and can be cached for the lifetime of the server
+// Note: Server restart will clear cache, or you can add a cache-busting endpoint
+let cachedReferenceData: {
+  allInkNames: string[];
+  allTypeNames: string[];
+  allRarityNames: string[];
+  allSetIds: number[];
+} | null = null;
+
+async function getReferenceData() {
+  if (cachedReferenceData) {
+    return cachedReferenceData;
+  }
+
+  // Use Promise.all for parallel queries (faster than sequential)
+  const [allInks, allTypes, allRarities, allSets] = await Promise.all([
+    prisma.ink.findMany({ select: { name: true } }),
+    prisma.type.findMany({ select: { name: true } }),
+    prisma.rarity.findMany({ select: { name: true } }),
+    prisma.set.findMany({ select: { id: true } }),
+  ]);
+
+  cachedReferenceData = {
+    allInkNames: allInks.map(i => i.name),
+    allTypeNames: allTypes.map(t => t.name),
+    allRarityNames: allRarities.map(r => r.name),
+    allSetIds: allSets.map(s => s.id),
+  };
+
+  return cachedReferenceData;
+}
+
+// Export function to clear cache (useful for testing or after adding new sets)
+export function clearReferenceDataCache() {
+  cachedReferenceData = null;
+}
+
 export default defineEventHandler(async (event) => {
   try {
     const query = getQuery(event);
@@ -38,15 +76,8 @@ export default defineEventHandler(async (event) => {
     // Build where clause
     const where: any = {};
 
-    // Get all available options to check if "all" are selected
-    const allInks = await prisma.ink.findMany({ select: { name: true } });
-    const allInkNames = allInks.map(i => i.name);
-    const allTypes = await prisma.type.findMany({ select: { name: true } });
-    const allTypeNames = allTypes.map(t => t.name);
-    const allRarities = await prisma.rarity.findMany({ select: { name: true } });
-    const allRarityNames = allRarities.map(r => r.name);
-    const allSets = await prisma.set.findMany({ select: { id: true } });
-    const allSetIds = allSets.map(s => s.id);
+    // Get cached reference data to check if "all" options are selected
+    const { allInkNames, allTypeNames, allRarityNames, allSetIds } = await getReferenceData();
 
     // Ink filter - check if card has any of the selected inks
     // Only apply if not all inks are selected
@@ -182,48 +213,67 @@ export default defineEventHandler(async (event) => {
         orderBy = { setNumber: "asc" };
     }
 
-    // Fetch cards with relations first (we'll handle dual/single ink post-query)
-    // For accurate pagination with dual/single filter, we need to fetch all matching cards and filter
+    // Handle dual/single ink filter efficiently
     const shouldFilterDualSingle = dualSingle.length > 0 && dualSingle.length === 1;
     const skip = (page - 1) * limit;
 
-    // When filtering for dual/single ink, we need to fetch all matching cards first,
-    // then filter and paginate, because we can't know which cards will pass the filter
     let cards: any[];
     let total: number;
     
     if (shouldFilterDualSingle) {
-      // Fetch all cards matching the other filters (no limit/skip yet)
-      const allCards = await prisma.card.findMany({
-        where,
-        include: {
-          Inks: true,
-          Types: true,
-          Keywords: true,
-          Classifications: true,
-          Rarity: true,
-          Set: true,
-        },
-        orderBy,
-      });
+      // OPTIMIZED: Use raw SQL to filter cards by ink count without loading all data
+      // This queries only card IDs, not full card data with relations
+      const inkCountFilter = dualSingle.includes("dual") ? "> 1" : "= 1";
+      
+      // Build WHERE clause SQL from existing Prisma where conditions
+      // We'll use a subquery approach to get filtered card IDs
+      const inkCountQuery = `
+        SELECT c.id
+        FROM Card c
+        INNER JOIN (
+          SELECT cardId, COUNT(*) as ink_count
+          FROM _CardToInk
+          GROUP BY cardId
+        ) ink_counts ON c.id = ink_counts.cardId
+        WHERE ink_counts.ink_count ${inkCountFilter}
+      `;
 
-      // Apply dual/single ink filter
-      let filteredCards: any[];
-      if (dualSingle.includes("dual")) {
-        filteredCards = allCards.filter((card) => card.Inks && card.Inks.length > 1);
-      } else if (dualSingle.includes("single")) {
-        filteredCards = allCards.filter((card) => card.Inks && card.Inks.length === 1);
+      // Get filtered card IDs efficiently
+      const filteredCardIds = await prisma.$queryRawUnsafe<{ id: number }[]>(inkCountQuery);
+      const cardIds = filteredCardIds.map(c => c.id);
+
+      // Add ink count filter to where clause
+      if (cardIds.length === 0) {
+        // No cards match the dual/single filter
+        cards = [];
+        total = 0;
       } else {
-        filteredCards = allCards;
+        // Combine with existing where clause
+        const combinedWhere = {
+          ...where,
+          id: { in: cardIds }
+        };
+
+        // Now fetch only the paginated cards with all relations
+        cards = await prisma.card.findMany({
+          where: combinedWhere,
+          include: {
+            Inks: true,
+            Types: true,
+            Keywords: true,
+            Classifications: true,
+            Rarity: true,
+            Set: true,
+          },
+          orderBy,
+          take: limit,
+          skip: skip,
+        });
+        
+        total = await prisma.card.count({ where: combinedWhere });
       }
-
-      // Get total from filtered cards before pagination
-      total = filteredCards.length;
-
-      // Apply pagination after filtering
-      cards = filteredCards.slice(skip, skip + limit);
     } else {
-      // Normal query with pagination
+      // Normal query with pagination (no dual/single filter)
       cards = await prisma.card.findMany({
         where,
         include: {
